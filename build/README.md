@@ -11,6 +11,8 @@ Our robot is a four-wheeled vehicle which has a rear-wheel drive with steering i
 
 ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/1d374418-1677-495a-9adb-77a0abb5c40a)
 
+## Steering
+
 Our steering mechanism is a four-bar with free spinning wheels mounted on it. The motor will move the four-bar which changes the angle of the wheels which changes the direction the vehicle is travelling in. We decided to use this type of steering since it was simple even though the geometry does not work perfectly, it is still good enough for the purpose of this car.
 
 ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/43159301-d6ed-4b82-bd15-9d167c74ce55)
