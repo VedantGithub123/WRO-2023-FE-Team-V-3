@@ -11,7 +11,3 @@ This repository contains engineering materials of a self-driven vehicle's model 
 * `src` contains code of control software for all components which were programmed to participate in the competition
 * `strategy` contains documentation and diagrams explaining our approach to the problem
 * `video` contains the video.md file with the link to a video where driving demonstration exists
-
-## Code Explanation
-
-<!-- _This part must be filled by participants with the technical clarifications about the code: which modules the code consists of, how they are related to the electromechanical components of the vehicle, and what is the process to build/compile/upload the code to the vehicle’s controllers. -->
