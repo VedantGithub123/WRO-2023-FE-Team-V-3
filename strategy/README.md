@@ -6,7 +6,8 @@ This directory consists of an explanation and diagrams of our strategy for both 
 ## Open Challenge Strategy
 
 In the open challenge, the only changes to the field are the size of the interior walls. In order to combat these changes, we will be using IR distance sensors to identintify the distance from the walls. By having multiple distance sensors, we can identify the distance to the surrounding walls. We can use these sensor reading to correct ourselves and make sure we go parallel to the wall. We know when to turn since we will be using an RGB sensor to detect the lines in the corner. This will also allow us to count the number of laps we complete so we know when to end. Below are diagrams and flow charts demonstrating the process.
-
+| Straight Movement | Turning |
+| ----------------- | ------- |
 | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/53158008-50e9-43d2-a8da-e41560a97f00) | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/22a1995e-1c62-4540-9e58-ad45c3a5c97a) |
 ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/2448b1ec-511b-4f77-8bc3-528df8e6e0b6)
 
