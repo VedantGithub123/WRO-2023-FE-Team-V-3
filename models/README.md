@@ -5,8 +5,8 @@ This directory contains all the models used for our robot. Since our robot is ma
 
 | File Name | Description | Image |
 | ----------- | ----------- | ----------- |
-| Battery Mount.stl | In order to mount the battery onto our robot, we designed and printed a mount which will be connected onto LEGO and can push the battery into | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/b3c77631-9312-461a-8f27-3cfb16f4c5b8) |
+| Battery Mount.stl | In order to mount the battery onto our robot, we designed and printed a mount which will be connected onto LEGO and can push the battery into | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/8f95a1c3-0801-4091-be89-27c0f2f51ecb) |
 | Servo Adapter.stl | Since we are controlling the steering mechanism with a servo motor, we need an adapter which will fits onto the servo gear and connects to the axles on the steering mechanism | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/30b39a18-809c-4676-9ff8-7d240d31a4a0) |
-| Servo Mount.stl | To attach our servo motor for steering onto our chassis, we printed a mount which connects to the lego and can mount the servo | **Insert Image Here** |
-| Raspberry Pi Mount.stl | To put the raspberry pi in a shielded area and to attach it to our robot, we printed a case for the pi which attaches to the LEGO chassis | **Insert Image Here** |
-| Motor Adapter.stl | To transfer the power of the motor to the LEGO axles powering the wheels, we printed an adapter which you put onto the motor shaft and the axle| **Insert Image Here** |
+| Servo Mount.stl | To attach our servo motor for steering onto our chassis, we printed a mount which connects to the lego and can mount the servo |![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/3f8a0f49-5e8c-4832-98c1-b5f45d3008f8) |
+| Motor Adapter.stl | To transfer the power of the motor to the LEGO axles powering the wheels, we printed an adapter which you put onto the motor shaft and the axle | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/e534238e-082d-48da-b549-4ca38273b57b) |
+| Motor Mount.stl | In order to attach the motors onto the LEGO chassis, we are required to 3d print a mount to place the motors | ![Alt text](image.png) |
