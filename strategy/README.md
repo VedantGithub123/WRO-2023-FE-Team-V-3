@@ -30,6 +30,6 @@ The first strategy to approach the obstacle challenge is to keep the closest col
 
 Our second strategy for the obstacle challenge is to plan a path for each stretch of the mat and get the robot to follow that path. By having the current position, current heading, target position, and target heading, we can generate a polynomial to fit these paramenters. We do this with multiple target points to create a target path which we aim to follow and steer the robot so it aims to move in the direction of the next point. This path taks into account the position of the obstacles and maps points which avoid them. We then repeat this process until 3 rounds are over. 
 
-| Obstacle Challenge COmplicated Approach |
+| Obstacle Challenge Complicated Approach |
 | ---------------------------------- |
 | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/36173d42-eb99-45da-80e0-ce6af80726a3) |
