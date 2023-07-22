@@ -10,7 +10,9 @@ In the open challenge, the only changes to the field are the size of the interio
 | ----------------- | ------- |
 | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/53158008-50e9-43d2-a8da-e41560a97f00) | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/22a1995e-1c62-4540-9e58-ad45c3a5c97a) |
 
-![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/2448b1ec-511b-4f77-8bc3-528df8e6e0b6)
+| Open Challenge Flowchart |
+| ------------------------ |
+| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/2448b1ec-511b-4f77-8bc3-528df8e6e0b6) |
 
 ## Obstacle Challenge Strategy
 
