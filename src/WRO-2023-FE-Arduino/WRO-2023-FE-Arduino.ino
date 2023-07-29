@@ -88,12 +88,8 @@ public:
     tcs.setInterrupt(true);  // turn off LED
 
     int col = 0;  //0: White, 1: Orange, 2: Blue
-    if (blue > 90) { col = 2; }
+    if (blue > 95) { col = 2; }
     if (red > 85) { col = 1; }
-    Serial.print(red);
-    Serial.print("     ");
-    Serial.print(blue);
-    Serial.print("\n");
     return col;
   }
 
@@ -145,7 +141,7 @@ public:
     Wire.write(address);
     Wire.endTransmission();
     Wire.requestFrom(deviceAddress, 1);
-    delay(10);
+    delay(1);
     v = Wire.read();
     return v;
   }
@@ -161,21 +157,20 @@ public:
   }
 
   void calibrate() {
-    for (int i = 0; i < 200; i++) {
+    for (int i = 0; i < 2000; i++) {
       drift += getGyroChange();
-      delay(10);
     }
-    drift /= 200;
-    prevTime = millis();
+    drift /= 2000;
+    prevTime = micros();
   }
 
   void updateGyro() {
-    angle += (millis() - prevTime) / 1000.0 * (getGyroChange() - drift) / 2000.0 * 360;
-    prevTime = millis();
+    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / 2000.0 * -270;
+    prevTime = micros();
   }
 
   float angle = 0;
-  unsigned long int prevTime = millis();
+  unsigned long int prevTime = micros();
   float drift = 0;
   int L3G4200D_Address = 105;
 };
@@ -203,7 +198,7 @@ public:
     int lowInd = 0;
     int lowVal = pixy.ccc.blocks[0].m_y;
     if (pixy.ccc.numBlocks){
-      for (int i = 1; i<pixy.ccc.numBlocks; i++){
+      for (int i = 1; i>pixy.ccc.numBlocks; i++){
         if (pixy.ccc.blocks[i].m_y<lowVal){
           lowVal = pixy.ccc.blocks[i].m_y;
           lowInd = i;
@@ -248,13 +243,14 @@ public:
 };
 
 // Constructs an instance of the classes
-Chassis chassis(11, 8, 7, 6, 5, 4, 10);
+Chassis chassis(3, 8, 7, 6, 5, 4, 10);
 rgbSensor rgbSense;
 int irPorts[6] = {A0, A1, A2};
 IRSensors irSensors(irPorts);
 USSensor leftSensor(A3, 9);
-USSensor rightSensor(13, 12);
+USSensor rightSensor(A3, 0);
 Gyro gyro;
+Camera camera;
 // Defines the pin for the pushbutton
 int buttonPort = 2;
 
@@ -270,19 +266,26 @@ void setup() {
 
   // Sets up the electronic components
   chassis.attachServo();
-  chassis.steer(0);
   rgbSense.setup();
   leftSensor.setup();
   rightSensor.setup();
-  // gyro.setup();
-  // gyro.calibrate();
+  // camera.setup();
+  gyro.setup();
+  gyro.calibrate();
+  
+  chassis.steer(0);
 
   // Start the program once the button is pressed
 
   while (!digitalRead(buttonPort)){
-    delay(5);
+    // chassis.move(255);
+    // Serial.println(rgbSense.getColor());
+    // Serial.println(leftSensor.getDistance());
+    gyro.updateGyro();
+    // Serial.println(abs(gyro.getAngle()));
+    delay(1);
   }
-  delay(1);
+  
   prevTime = millis()-1;
 }
 
@@ -314,32 +317,55 @@ void open(){
     dir = rgbSense.getColor();
   }
 
-  if (rgbSense.getColor()==dir && dir!=0){
+  if (rgbSense.getColor()==dir && dir!=0 || dir > 0){
     
     cornerCount++;
     if (cornerCount>=12){
-      endTime = millis()+3000;
+      endTime = millis()+4000;
     }
-    while (irSensors.getDistance(1)>50){
+    USSensor ultrasonic = (dir==1) ? rightSensor : leftSensor;
+    while (((ultrasonic.getDistance()<75) || (ultrasonic.getDistance()>1000))){
       err = irSensors.getDistance(2)-irSensors.getDistance(0)+bias;
       integral+=(millis()-prevTime)*err;
       steer = err*kP+(err-prevErr)/(millis()-prevTime)*kD+integral*kI;
+      if (irSensors.getDistance(0)<25){
+        steer = 20;
+      }else if (irSensors.getDistance(2)<25){
+        steer = -20;
+      }
       chassis.steer(steer);
       prevTime = millis();
       prevErr = err;
-      delay(1);
+      gyro.updateGyro();
     }
+    chassis.steer(0);
+    while (irSensors.getDistance(1)>70){gyro.updateGyro();}
+    chassis.move(165);
     if (dir==1){
       bias = 17;
       chassis.steer(35);
     }else{
-      bias=-5;
+      bias=0;
       chassis.steer(-35);
     }
 
-    while (irSensors.getDistance(1)<100){delay(5);}
-
+    do {
+      gyro.updateGyro();
+      Serial.println(gyro.getAngle());
+    }while(abs(gyro.getAngle()) < (cornerCount*90)-20);
+    
+    chassis.move(205);
+    // prevTime = millis();
+    // while (millis()-prevTime<1000){
+    //   gyro.updateGyro();
+    // }
+    // chassis.move(205);
     prevTime = millis()-1;
+  }
+  if (irSensors.getDistance(0)<30){
+    steer = 20;
+  }else if (irSensors.getDistance(2)<30){
+    steer = -20;
   }
 
   prevErr = err;
@@ -354,11 +380,48 @@ void open(){
     chassis.steer(0);
     delay(10000000);
   }
-  delay(1);
+  gyro.updateGyro();
 }
 
 void challenge(){
 
+  speed+=20;
+  speed = min(speed, 205);
+
+  if (dir==0){
+    dir = rgbSense.getColor();
+  }
+
+  Block closeBlock = camera.getClosest();
+  if (closeBlock.m_signature>2){
+    steer = 0;
+  }else{
+    int target;
+    if (closeBlock.m_signature==1){
+      target = (207-closeBlock.m_y)/1.3;
+    }else{
+      target = -1*(207-closeBlock.m_y)/1.3+315;
+    }
+    err = closeBlock.m_x-target;
+    steer = err*10.3;
+  }
+
+  if (leftSensor.getDistance()<5 || irSensors.getDistance(2)<25){
+    steer = 20;
+  }else if (rightSensor.getDistance()<5 || irSensors.getDistance(0)<25){
+    steer = -20;
+  }
+  
+  if (millis()<endTime){
+    chassis.steer(steer);
+
+    chassis.move(speed);
+  }else{
+    chassis.move(0);
+    chassis.steer(0);
+    delay(10000000);
+  }
+  delay(1);
 }
 
 void loop() {
