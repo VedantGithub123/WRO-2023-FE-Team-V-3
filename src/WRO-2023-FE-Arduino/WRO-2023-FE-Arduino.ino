@@ -1,3 +1,4 @@
+// Imports libraries used
 #include <Servo.h>
 #include "Adafruit_TCS34725.h"
 #include <Adafruit_Sensor.h>
@@ -13,9 +14,11 @@
 
 
 // Creates the Chassis class which includes steering and driving
-class Chassis {
+class Chassis
+{
 public:
-  Chassis(int e1, int i1, int i2, int e2, int i3, int i4, int steerPort) {
+  Chassis(int e1, int i1, int i2, int e2, int i3, int i4, int steerPort)
+  {
     enA = e1;
     in1 = i1;
     in2 = i2;
@@ -34,32 +37,37 @@ public:
     pinMode(in4, OUTPUT);
 
   }
-  void move(int speed) {
+  void move(int speed)
+  {
     speed = speed / abs(speed) * min(255, abs(speed));
     analogWrite(enA, abs(speed));
     analogWrite(enB, abs(speed));
-    if (speed == 0) {
+    if (speed == 0)
+    {
       digitalWrite(in1, LOW);
       digitalWrite(in2, LOW);
       digitalWrite(in3, LOW);
       digitalWrite(in4, LOW);
-    } else if (speed > 0) {
+    } else if (speed > 0)
+    {
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
       digitalWrite(in3, HIGH);
       digitalWrite(in4, LOW);
-    } else {
+    } else
+    {
       digitalWrite(in1, LOW);
       digitalWrite(in2, HIGH);
       digitalWrite(in3, LOW);
       digitalWrite(in4, HIGH);
     }
   }
-  void steer(int angle) {
+  void steer(int angle)
+  {
     steering.write(angle / abs(angle) * min(abs(angle), 35) + 35);
-    // steering.write(angle);
   }
-  void attachServo() {
+  void attachServo()
+  {
     steering.attach(sPort);
   }
   Servo steering;
@@ -74,18 +82,20 @@ public:
 };
 
 // Creates the rgbSensor class which is used for the rgb sensor
-class rgbSensor {
+class rgbSensor
+{
 public:
-  int getColor() {
+  int getColor()
+  {
     float red, green, blue;
 
-    tcs.setInterrupt(false);  // turn on LED
+    tcs.setInterrupt(false);
 
-    delay(3);  // takes 50ms to read
+    delay(3);
 
     tcs.getRGB(&red, &green, &blue);
 
-    tcs.setInterrupt(true);  // turn off LED
+    tcs.setInterrupt(true);
 
     int col = 0;  //0: White, 1: Orange, 2: Blue
     if (blue > 95) { col = 2; }
@@ -93,7 +103,8 @@ public:
     return col;
   }
 
-  void setup() {
+  void setup()
+  {
     tcs.begin();
   }
 
@@ -101,14 +112,18 @@ public:
 };
 
 // Creates the IRSensors class which is used to read the IR sensor values
-class IRSensors {
+class IRSensors
+{
 public:
-  IRSensors(int ports[]) {
-    for (int i = 0; i < 6; i++) {
+  IRSensors(int ports[])
+  {
+    for (int i = 0; i < 6; i++)
+    {
       irPorts[i] = ports[i];
-    };
+    }
   }
-  int getDistance(int port) {
+  int getDistance(int port)
+  {
     port = max(min(port, 5), 0);
     return (11.63417 + (241.6444 - 11.63417)/pow((1 + (analogRead(port)*5.0/1023.0/0.5075672)), 1.868922))*1.5;
   }
@@ -116,26 +131,30 @@ public:
 };
 
 // Creates the Gyro class which is used to measure our heading
-class Gyro {
+class Gyro
+{
 public:
 
-  void setup() {
+  void setup()
+  {
     writeRegister(L3G4200D_Address, CTRL_REG1, 0b00001111);
     writeRegister(L3G4200D_Address, CTRL_REG2, 0b00000000);
     writeRegister(L3G4200D_Address, CTRL_REG3, 0b00001000);
     writeRegister(L3G4200D_Address, CTRL_REG4, 0b00110000);
     writeRegister(L3G4200D_Address, CTRL_REG5, 0b00000000);
-    delay(1500);
+    delay(500);
   }
 
-  void writeRegister(int deviceAddress, byte address, byte val) {
+  void writeRegister(int deviceAddress, byte address, byte val)
+  {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);
     Wire.write(val);
     Wire.endTransmission();
   }
 
-  int readRegister(int deviceAddress, byte address) {
+  int readRegister(int deviceAddress, byte address)
+  {
     int v;
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);
@@ -146,27 +165,33 @@ public:
     return v;
   }
 
-  float getGyroChange() {
+  float getGyroChange()
+  {
     byte zMSB = readRegister(L3G4200D_Address, 0x2D);
     byte zLSB = readRegister(L3G4200D_Address, 0x2C);
     return ((zMSB << 8) | zLSB);
   }
 
-  float getAngle() {
+  float getAngle()
+  {
     return angle;
   }
 
-  void calibrate() {
-    for (int i = 0; i < 2000; i++) {
+  void calibrate()
+  {
+    for (int i = 0; i < 4000; i++)
+    {
       drift += getGyroChange();
     }
-    drift /= 2000;
+    drift /= 4000;
     prevTime = micros();
   }
 
-  void updateGyro() {
-    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / 2000.0 * -270;
+  void updateGyro()
+  {
+    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / 2000.0 * -330;
     prevTime = micros();
+    Serial.println("hello");
   }
 
   float angle = 0;
@@ -186,20 +211,26 @@ class ColorBlock : Block
 };
 
 // Creates the Camera class which is used to get certain blocks from the PixyCam 2.1
-class Camera {
+class Camera
+{
 public:
-  void setup(){
+  void setup()
+  {
     pixy.init();
   }
 
-  Block getClosest(){
+  Block getClosest()
+  {
     pixy.ccc.getBlocks();
 
     int lowInd = 0;
     int lowVal = pixy.ccc.blocks[0].m_y;
-    if (pixy.ccc.numBlocks){
-      for (int i = 1; i>pixy.ccc.numBlocks; i++){
-        if (pixy.ccc.blocks[i].m_y<lowVal){
+    if (pixy.ccc.numBlocks)
+    {
+      for (int i = 1; i<pixy.ccc.numBlocks; i++)
+      {
+        if (pixy.ccc.blocks[i].m_y>lowVal)
+        {
           lowVal = pixy.ccc.blocks[i].m_y;
           lowInd = i;
         }
@@ -212,19 +243,23 @@ public:
   Pixy2 pixy;
 };
 
-class USSensor {
+class USSensor
+{
 public:
-  USSensor(int port1, int port2){
+  USSensor(int port1, int port2)
+  {
     trig = port1;
     echo = port2;
   }
 
-  void setup(){
+  void setup()
+  {
     pinMode(trig, OUTPUT);
     pinMode(echo, INPUT);
   }
 
-  float getDistance(){
+  float getDistance()
+  {
     digitalWrite(trig, LOW);
     delayMicroseconds(10);
     digitalWrite(trig, HIGH);
@@ -232,36 +267,46 @@ public:
     digitalWrite(trig, LOW);
     long duration = pulseIn(echo, HIGH);
     float distance = duration * 0.034 / 2.0;
-    if (distance==0){
+    if (distance==0)
+    {
       distance=1000;
     }
     return distance;
   }
-  
+
   int trig = 0; 
   int echo = 0;
 };
 
 // Constructs an instance of the classes
-Chassis chassis(3, 8, 7, 6, 5, 4, 10);
-rgbSensor rgbSense;
-int irPorts[6] = {A0, A1, A2};
-IRSensors irSensors(irPorts);
-USSensor leftSensor(A3, 9);
-USSensor rightSensor(A3, 0);
-Gyro gyro;
-Camera camera;
-// Defines the pin for the pushbutton
-int buttonPort = 2;
+Chassis chassis(3, 8, 7, 6, 5, 4, 10); // For movement
+rgbSensor rgbSense; // For sensing lines on the mat
+const int irPorts[6] = {A0, A1, A2}; // Ports for the IR sensors
+IRSensors irSensors(irPorts); // For detecting distance in the front and wall following
+USSensor leftSensor(A3, 9); // For detecting distance on the left
+USSensor rightSensor(A3, 0); // For detecting distance on the right
+Gyro gyro; // For detecting the angle of our robot
+Camera camera; // For getting the obstacles
+const int buttonPort = 2; // Pin for the pushbutton
 
-int speed = 0;
-
-unsigned long int prevTime = millis();
+int speed = 0; // Defines the speed for the robot and is used for acceleration
+unsigned long int prevTime = millis(); // Stores the previous time for wall following
+const float kP = -0.18; // kP value for wall following
+const float kD = 0.01; // kD value for wall following
+const float kI = -0.0; // kI value for wall following
+float integral = 0; // Holds the integral value for wall following
+float prevErr = 0; // Holds preveious error for wall following
+int cornerCount = 0; // Number of corners passed
+unsigned long int endTime = 10000000000; // 
+int dir = 0; // Stores the direction of our robot: | 0: Undecided | 1: Clockwise | 2: Counterclockwise |
+float bias = 0; // Bias for the error to follow on the outer wall
+int cornerScanDelay = 0; // Stores time of last line detected for time between corners
+bool cornerDetected = false; // Boolean to store if the line has been detected
 
 void setup() {
   Serial.begin(9600); // Starts the serial monitor for debugging
 
-  // Sets the pin mode
+  // Sets the pin mode for the button
   pinMode(buttonPort, INPUT);
 
   // Sets up the electronic components
@@ -269,159 +314,93 @@ void setup() {
   rgbSense.setup();
   leftSensor.setup();
   rightSensor.setup();
-  // camera.setup();
   gyro.setup();
   gyro.calibrate();
-  
-  chassis.steer(0);
+  camera.setup();
+  chassis.steer(0); // Aligns steering when everything is ready
 
   // Start the program once the button is pressed
-
-  while (!digitalRead(buttonPort)){
-    // chassis.move(255);
-    // Serial.println(rgbSense.getColor());
-    // Serial.println(leftSensor.getDistance());
-    gyro.updateGyro();
-    // Serial.println(abs(gyro.getAngle()));
-    delay(1);
+  while (!digitalRead(buttonPort))
+  {
+    delay(5);
   }
-  
-  prevTime = millis()-1;
+
+  prevTime = millis()-1; // Sets previous time to current time minus one to not divide by 0
 }
-
-float kP = -0.2;
-float kD = -0;
-float kI = -0.0;
-float integral = 0;
-float prevErr = 0;
-int cornerCount = 0;
-unsigned long int endTime = 10000000000;
-int dir = 0;
-
-float bias = 0;
-
-float err;
-float steer;
 
 void open(){
 
-  speed+=20;
-  speed = min(speed, 205);
+  // Accelerates robot
+  speed+=10;
+  speed = min(speed, (dir==0) ? 105 : 205); // Sets max speed to 105 until direction is defined
 
-  err = irSensors.getDistance(2)-irSensors.getDistance(0)+bias;
-  integral+=(millis()-prevTime)*err;
-  
-  steer = err*kP+(err-prevErr)/(millis()-prevTime)*kD+integral*kI;
+  float err = irSensors.getDistance(2)-irSensors.getDistance(0)+bias; // Gets error from IR sensors
+  integral+=(millis()-prevTime)*err; // Adds to integral
 
-  if (dir==0){
+  float steer = err*kP+(err-prevErr)/(millis()-prevTime)*kD+integral*kI; // Gets steering value
+
+  if (dir==0)
+  { // Rewrites direction to the color of the sensor if the direction is not defined
     dir = rgbSense.getColor();
   }
 
-  if (rgbSense.getColor()==dir && dir!=0 || dir > 0){
+  if(cornerDetected && irSensors.getDistance(1)<50)
+  { // Starts turning when the corner is detected and the robot is close to the wall
     
-    cornerCount++;
-    if (cornerCount>=12){
-      endTime = millis()+4000;
-    }
-    USSensor ultrasonic = (dir==1) ? rightSensor : leftSensor;
-    while (((ultrasonic.getDistance()<75) || (ultrasonic.getDistance()>1000))){
-      err = irSensors.getDistance(2)-irSensors.getDistance(0)+bias;
-      integral+=(millis()-prevTime)*err;
-      steer = err*kP+(err-prevErr)/(millis()-prevTime)*kD+integral*kI;
-      if (irSensors.getDistance(0)<25){
-        steer = 20;
-      }else if (irSensors.getDistance(2)<25){
-        steer = -20;
-      }
-      chassis.steer(steer);
-      prevTime = millis();
-      prevErr = err;
-      gyro.updateGyro();
-    }
-    chassis.steer(0);
-    while (irSensors.getDistance(1)>70){gyro.updateGyro();}
-    chassis.move(165);
-    if (dir==1){
+    // Turns and sets the bias based on which direction the robot is moving
+    if (dir==1)
+    {
       bias = 17;
       chassis.steer(35);
-    }else{
-      bias=0;
+    }else
+    {
+      bias=-15;
       chassis.steer(-35);
     }
 
-    do {
+    // Waits until the front IR sensor does not see anything
+    while (irSensors.getDistance(1)<100)
+    {
       gyro.updateGyro();
-      Serial.println(gyro.getAngle());
-    }while(abs(gyro.getAngle()) < (cornerCount*90)-20);
+    }
+
+    cornerDetected = false; // Resets cornerDetected variable until the line is seen again
+  }
+
+  if (rgbSense.getColor()==dir && dir!=0 && millis() - cornerScanDelay > 500)
+  { // Checks if the line is seen and if the time after the last scan was greater than 500ms
+
+    cornerCount++; // Increases the amount of corners we have passed
+    if (cornerCount>=12 && abs(gyro.getAngle()) > 1050)
+    { // If the corners passed are more than 12 and the gyro angle says 3 laps are finished, stop the robot after some time
+      endTime = millis()+2000;
+    }
+
+    cornerDetected = true; // Flags the cornerDetected variable as true
     
-    chassis.move(205);
-    // prevTime = millis();
-    // while (millis()-prevTime<1000){
-    //   gyro.updateGyro();
-    // }
-    // chassis.move(205);
-    prevTime = millis()-1;
-  }
-  if (irSensors.getDistance(0)<30){
-    steer = 20;
-  }else if (irSensors.getDistance(2)<30){
-    steer = -20;
+    cornerScanDelay = millis(); // Updates cornerScanDelay with the current time
   }
 
-  prevErr = err;
-  prevTime = millis();
-  
-  if (millis()<endTime){
+  prevErr = err; // Updates prevErr
+  prevTime = millis(); // Updates prevTime
+
+
+  if (millis()<endTime)
+  { // If the time is not finished, keep moving the robot
     chassis.steer(steer);
-
     chassis.move(speed);
-  }else{
+  }else
+  { // If the time is up, stop the robot
     chassis.move(0);
     chassis.steer(0);
     delay(10000000);
   }
-  gyro.updateGyro();
+
+  gyro.updateGyro(); // Update the gyro
 }
 
 void challenge(){
 
-  speed+=20;
-  speed = min(speed, 205);
-
-  if (dir==0){
-    dir = rgbSense.getColor();
-  }
-
-  Block closeBlock = camera.getClosest();
-  if (closeBlock.m_signature>2){
-    steer = 0;
-  }else{
-    int target;
-    if (closeBlock.m_signature==1){
-      target = (207-closeBlock.m_y)/1.3;
-    }else{
-      target = -1*(207-closeBlock.m_y)/1.3+315;
-    }
-    err = closeBlock.m_x-target;
-    steer = err*10.3;
-  }
-
-  if (leftSensor.getDistance()<5 || irSensors.getDistance(2)<25){
-    steer = 20;
-  }else if (rightSensor.getDistance()<5 || irSensors.getDistance(0)<25){
-    steer = -20;
-  }
-  
-  if (millis()<endTime){
-    chassis.steer(steer);
-
-    chassis.move(speed);
-  }else{
-    chassis.move(0);
-    chassis.steer(0);
-    delay(10000000);
-  }
-  delay(1);
 }
 
 void loop() {
