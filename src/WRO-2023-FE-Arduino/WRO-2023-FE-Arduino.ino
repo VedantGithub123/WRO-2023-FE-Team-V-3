@@ -142,7 +142,7 @@ public:
     writeRegister(L3G4200D_Address, CTRL_REG3, 0b00001000);
     writeRegister(L3G4200D_Address, CTRL_REG4, 0b00110000);
     writeRegister(L3G4200D_Address, CTRL_REG5, 0b00000000);
-    delay(500);
+    delay(1);
   }
 
   void writeRegister(int deviceAddress, byte address, byte val)
@@ -189,7 +189,7 @@ public:
 
   void updateGyro()
   {
-    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / 2000.0 * -330;
+    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286;
     prevTime = micros();
     Serial.println("hello");
   }
@@ -291,8 +291,8 @@ const int buttonPort = 2; // Pin for the pushbutton
 
 int speed = 0; // Defines the speed for the robot and is used for acceleration
 unsigned long int prevTime = millis(); // Stores the previous time for wall following
-const float kP = -0.18; // kP value for wall following
-const float kD = 0.01; // kD value for wall following
+const float kP = -0.17; // kP value for wall following
+const float kD = 0.0; // kD value for wall following
 const float kI = -0.0; // kI value for wall following
 float integral = 0; // Holds the integral value for wall following
 float prevErr = 0; // Holds preveious error for wall following
@@ -303,7 +303,8 @@ float bias = 0; // Bias for the error to follow on the outer wall
 int cornerScanDelay = 0; // Stores time of last line detected for time between corners
 bool cornerDetected = false; // Boolean to store if the line has been detected
 
-void setup() {
+void setup()
+{
   Serial.begin(9600); // Starts the serial monitor for debugging
 
   // Sets the pin mode for the button
@@ -328,7 +329,8 @@ void setup() {
   prevTime = millis()-1; // Sets previous time to current time minus one to not divide by 0
 }
 
-void open(){
+void open()
+{
 
   // Accelerates robot
   speed+=10;
@@ -350,16 +352,16 @@ void open(){
     // Turns and sets the bias based on which direction the robot is moving
     if (dir==1)
     {
-      bias = 17;
+      bias = -5;
       chassis.steer(35);
     }else
     {
-      bias=-15;
+      bias=-13;
       chassis.steer(-35);
     }
 
     // Waits until the front IR sensor does not see anything
-    while (irSensors.getDistance(1)<100)
+    while (irSensors.getDistance(1)<110)
     {
       gyro.updateGyro();
     }
@@ -371,9 +373,9 @@ void open(){
   { // Checks if the line is seen and if the time after the last scan was greater than 500ms
 
     cornerCount++; // Increases the amount of corners we have passed
-    if (cornerCount>=12 && abs(gyro.getAngle()) > 1050)
-    { // If the corners passed are more than 12 and the gyro angle says 3 laps are finished, stop the robot after some time
-      endTime = millis()+2000;
+    if (abs(gyro.getAngle()) > 550)
+    { // If the gyro angle says 3 laps are finished, stop the robot after some time
+      endTime = millis()+2700;
     }
 
     cornerDetected = true; // Flags the cornerDetected variable as true
@@ -399,11 +401,13 @@ void open(){
   gyro.updateGyro(); // Update the gyro
 }
 
-void challenge(){
+void challenge()
+{
 
 }
 
-void loop() {
+void loop()
+{
   open();
   // challenge();
 
