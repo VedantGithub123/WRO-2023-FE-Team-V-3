@@ -21,14 +21,13 @@ This directory consists of schematic diagrams demonstrating the connections betw
 ## Parts Bill Of Materials (BOM)
 | Part Name | Quantity |
 | ----------| -------- |
-| 12V 3000mAh Lithium-ion Battery | 1 |
+| 1.5V Rechargeable Lithium Ion Battery | 4 |
 | 22mm Planetary Gear DC Motor w/ 12V Encoder, 185RPM | 2 |
 | CJMCU34725 TCS34725 RGB Light Color Sensor | 1 |
-| ELEGOO UNO R3 | 1 |
+| Arduino Nano | 1 |
 | ES08MA Metal Analog Servo | 1 |
-| GP2Y0A02YK0F IR Range Sensor | 3 |
-| HC-SR04 Ultrasonic Distance Sensor | 2 |
+| GP2Y0A02YK0F IR Range Sensor | 1 |
+| HW201 IR Sensor | 2 |
 | L298N Dual H-Bridge Motor Driver | 1 |
 | L3G4200D Triple Axis Gyro Angular Velocity Sensor Module | 1 |
-| L7805 Voltage Regulator | 1 |
 | PixyCam Pixy 2.1 Robot Vision Image Sensor | 1 |
