@@ -22,7 +22,7 @@ This directory consists of schematic diagrams demonstrating the connections betw
 | Part Name | Quantity |
 | ----------| -------- |
 | 1.5V Rechargeable Lithium Ion Battery | 4 |
-| 22mm Planetary Gear DC Motor w/ 12V Encoder, 185RPM | 2 |
+| DC 6V Micro Gear Box Speed Reduction Motor, 300RPM | 2 |
 | CJMCU34725 TCS34725 RGB Light Color Sensor | 1 |
 | Arduino Nano | 1 |
 | ES08MA Metal Analog Servo | 1 |
