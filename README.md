@@ -30,7 +30,7 @@ Prior to making this robot, our team went through various different iterations a
 One of these was a larger robot with the usage of many more sensors and parts. However, its large nature at 30x20x30cm caused it to be difficult to maneuver and control. All of our efforts were in vain as we faced many hardships and problems when trying to program that robot. Our robot’s turning radius was too large, and it was unable to maneuver around the obstacles while our sensors were placed inconveniently and were unable to correctly and quickly construct an efficient path for our robot to take. We realized that many parts of our robot were unnecessary, especially the sheer size of it, and we ultimately decided to do a complete redesign which led to our final robot design.
 | Old Robot | New Robot |
 | --------- | --------- |
-| <img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/857241b9-94ba-453f-89ac-cdbb4481c77c" width="200" height="200" /> | !<img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/5507bb85-d2db-4309-833f-36882c81d8dc" width="200" height="200" /> |
+| <img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/857241b9-94ba-453f-89ac-cdbb4481c77c" width="300" height="200" /> | !<img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/5507bb85-d2db-4309-833f-36882c81d8dc" width="300" height="200" /> |
 
 ### Electrical Components
 Our chassis is controlled by the Arduino Nano microcontroller, which gets information from various sensors and uses said information to control the motors using an L298N motor controller board. The sensors that we are using for our vehicle are the following:
