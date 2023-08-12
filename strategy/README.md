@@ -16,7 +16,7 @@ In the open challenge, the only changes to the field are the size of the interio
 
 ## Obstacle Challenge Strategy
 
-For the obstacle challenge, we have two strategies to approaching the problem. The first one is to only consider the first obstacle and act according to that while the other is to plan a path for one side of the round and follow that. We aim to complete the second strategy but will use the first one as a fall back is it doesn't work out. To detect the obstacles, we are using the OpenCV library in python to filter out colors which are not in a certain range. This allows us to isolate green colors in one filter and red colors in another filter. To identify the blocks, we blur the resulting image and take all the pixels which are still green or red and we repeat this to remove any noise.
+For the obstacle challenge, we have two strategies to approaching the problem. The first one is to only consider the first obstacle and act according to that while the other is to plan a path for one side of the round and follow that. We are working with both strategies and testing both simultaneously to determine the better strategy. To detect the obstacles, we are using the Pixycam 2.1 which gives a list of objects to the Arduino Nano.
 
 ### Strategy 1
 
