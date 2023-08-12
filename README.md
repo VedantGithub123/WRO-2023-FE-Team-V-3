@@ -26,6 +26,7 @@ Prior to making this robot, our team went through various different iterations a
 - Effectively use sensors to identify our location and our ideal path
 - Speed is not the first priority for this challenges
 - Maneuverability is key to solving the obstacle challenge
+
 One of these was a larger robot with the usage of many more sensors and parts. However, its large nature at 30x20x30cm caused it to be difficult to maneuver and control. All of our efforts were in vain as we faced many hardships and problems when trying to program that robot. Our robot’s turning radius was too large, and it was unable to maneuver around the obstacles while our sensors were placed inconveniently and were unable to correctly and quickly construct an efficient path for our robot to take. We realized that many parts of our robot were unnecessary, especially the sheer size of it, and we ultimately decided to do a complete redesign which led to our final robot design.
 | Old Robot | New Robot |
 | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/857241b9-94ba-453f-89ac-cdbb4481c77c) | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/5507bb85-d2db-4309-833f-36882c81d8dc) |
@@ -37,16 +38,20 @@ Our chassis is controlled by the Arduino Nano microcontroller, which gets inform
 - HW-201 IR Sensors
 - GP2Y0A02YK0F IR Range Sensor
 - L3G4200D 3-Axis Gyro
+
 We use the Pixycam 2.1 to identify the locations of the obstacles and effectively avoid them. The TCS34725 RGB sensor tells the microcontroller when it reaches a corner. Both IR sensors are used to detect the walls on the side and on the front. Finally, we use the L3G4200D gyro to know which direction we are facing. More information about our robot’s electrical components can be found in the README file in the electrical folder.
 
 ### Strategy and Code
 For the open challenge, our sensors are strategically placed in ways which allow us to detect walls at a 45° or less angle. This allows us to adjust accurately based on the distance from the wall, ultimately providing an optimal path to solve this challenge. In order to measure the number of laps we do, we use the RGB sensor to count the number of lines passed and then our robot stops after some time once 12 lines have been measured. This is implemented in the code by using the following lines:
+
 if (cornerCount==12)
 {
   endTime = millis()+5000;
 }
+
 The cornerCount variable keeps track of how many corners the robot has passed during its run. The number is twelve as the square-shaped mat has 4 corners, and the robot must complete three laps.
 We have two strategies for the obstacle challenge. The first of which only focuses on one block and a time and avoids it. The other strategy involves planning a route for each stretch of the lap and getting the robot to follow that path. Some code for the first challenge is the following:
+
 if (closeBlock.m_signature==1)
 {
 target = (207-closeBlock.m_y)/1.3-15;
@@ -55,7 +60,7 @@ target = (207-closeBlock.m_y)/1.3-15;
 target = 315.0-(207-closeBlock.m_y)/1.3+15;
 }
 err = -150.0*(closeBlock.m_x-target);
-}
+
 This code gets the closest block and sets the target position of that block onto either side of the robot based on the color of the block.
 
 All in all, this robot is a statement to our team’s adaptability and problem solving skills as we were able to completely redesign and program a new and more compact robot after learning from our previous mistakes. We hope that this robot and our hard work will lead us to success and we look forward to competing!
