@@ -265,9 +265,10 @@ bool cornerDetected = false; // Boolean to store if the line has been detected
 float steer = 0.0;
 Block prevObj; // Stores the last blcok
 Block prevObj2; // Stores the last passed block
+Block closeBlock;
 int target = 0; // Stores the target position of the blocks
 float err = 0; // Stores the error for following the object
-const float kP = -0.7*3; // Stores the kP for following the object
+const float kP = -0.35; // Stores the kP for following the object
 
 void setup()
 {
@@ -364,7 +365,7 @@ void open()
 
 void challenge()
 {
-  speed = 155; // Sets speed to 255
+  speed = 255; // Sets speed to 255
 
   steer = -1; // Steering is set to straight
 
@@ -379,71 +380,90 @@ void challenge()
     if (cornerCount==12)
     {
       endTime = millis()+3500;
-    }
-    if (prevObj2.m_signature==dir && camera.getClosest().m_signature==3-dir && 0)
+    }else if (cornerCount==8 && prevObj2.m_signature==1)
     {
-      while (irSensors.getDistance(1)>45)
-      {
-        // Insert Waiting Code Here
-      }
-      chassis.steer((1.5-dir)*60);
-      while (irSensors.getDistance(1)<50)
-      {
-        // Insert Waiting Code Here
-      }
-    }else if (prevObj2.m_signature==3-dir || 1)
-    {
-      while (irSensors.getDistance(1)>55)
-      {
-        // Insert Waiting Code Here
-      }
-      chassis.steer((1.5-dir)*80);
-      while (irSensors.getDistance(1)<85)
-      {
-        // Insert Waiting Code Here
-      }
+      dir = 3-dir;
+      while (irSensors.getDistance(1)>40){}
+      chassis.steer(-40);
+      delay(1500);
+      cornerCount+=1;
+      // Insert code for reversing the direction
     }else
     {
-      chassis.steer((1.5-dir)*60);
-      delay(1000);
+      if (camera.getClosest().m_signature==3-dir)
+      {
+        while (irSensors.getDistance(1)>40)
+        {
+          closeBlock = camera.getClosest();
+          if (closeBlock.m_signature<=2){
+            if (closeBlock.m_signature==1)
+            { // Sets the target for the block position on the left based on how far it is if it is red
+              target = (207-closeBlock.m_y)/2+15;
+              // target = 157;
+            }else
+            { // Sets the target for the block position on the right based on how far it is if it is green
+              target = 300.0-(207-closeBlock.m_y)/2;
+              // target = 157;
+            }
+            err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
+            steer = err*kP; // Gets steering value
+            if (steer>30){
+              steer = 30;
+            }else if (steer<-30){
+              steer = -30;
+            }
+            if (closeBlock.m_signature<=2)
+            {
+              prevObj2 = closeBlock;
+            }
+          }else{
+            steer = 0;
+          }
+          chassis.steer(steer);
+        }
+        chassis.steer((1.5-dir)*60);
+        while (irSensors.getDistance(1)<155)
+        {
+          // Insert Waiting Code Here
+        }
+      }else if (camera.getClosest().m_signature>2)
+      {
+        while (irSensors.getDistance(1)>70)
+        {
+          // Insert Waiting Code Here
+        }
+        chassis.steer((1.5-dir)*100);
+        while (irSensors.getDistance(1)<195)
+        {
+          // Insert Waiting Code Here
+        }
+        delay(100);
+      }else
+      {
+        chassis.steer(0);
+        delay(100);
+        chassis.steer((1.5-dir)*40);
+        delay(300);
+      }
     }
   }
 
-  Block closeBlock = camera.getClosest(); // Gets closest block from the camera
+  closeBlock = camera.getClosest(); // Gets closest block from the camera
 
-  if (closeBlock.m_index!=prevObj.m_index)
+  if (closeBlock.m_y>187 && closeBlock.m_signature<=2)
   { // If the current block is different from the old block, set the most recent block to the old block
-    prevObj2 = prevObj;
-    if (closeBlock.m_signature<2)
-    {
-      prevObj=closeBlock;
-    }
-    // if (prevObj2.m_signature==1)
-    // {
-    //   chassis.move(0);
-    //   delay(100);
-    //   chassis.move(155);
-    //   chassis.steer(-30);
-    //   delay(500);
-    // }else if (prevObj2.m_signature==2)
-    // {
-    //   chassis.move(0);
-    //   delay(100);
-    //   chassis.move(155);
-    //   chassis.steer(30);
-    //   delay(500);
-    // }
+    prevObj2 = closeBlock;
   }
   
   if (closeBlock.m_signature<=2)
   { 
     if (closeBlock.m_signature==1)
     { // Sets the target for the block position on the left based on how far it is if it is red
-      target = (207-closeBlock.m_y)/2+20;
+      target = (207-closeBlock.m_y)/2+15;
       // target = 157;
     }else
     { // Sets the target for the block position on the right based on how far it is if it is green
-      target = 295.0-(207-closeBlock.m_y)/2;
+      target = 300.0-(207-closeBlock.m_y)/2;
       // target = 157;
     }
     err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
@@ -457,12 +477,10 @@ void challenge()
 
   if (irSensors.getDistance(0))
   {
-    steer = 30;
-    delay(100);
+    steer = 60;
   }else if (irSensors.getDistance(2))
   {
-    steer = -30;
-    delay(100);
+    steer = -60;
   }
 
   if (millis()<endTime)
