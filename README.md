@@ -31,7 +31,8 @@ One of these was a larger robot with the usage of many more sensors and parts. H
 
 |   | Old Robot | New Robot |
 | - | ----------| ----------|
-| Pros |
+| Pros | <ul><li>Allows for the attachment of larger sensors</li><li>Faster robot due to the larger motors</li></ul>
+| Cons | 
 
 | Old Robot | New Robot |
 | --------- | --------- |
