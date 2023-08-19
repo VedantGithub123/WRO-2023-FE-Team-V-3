@@ -12,6 +12,14 @@ This repository contains engineering materials of a self-driven vehicle's model 
 * `strategy` contains documentation and diagrams explaining our approach to the problem
 * `video` contains the video.md file with the link to a video where driving demonstration exists
 
+* `Mobility Management` is found in `build`, `electrical`, and `models`
+* `Power and Sense Managament` is found in `electrical`
+* `Obstacle Management` is found in `strategy` and `src`
+* `Pictures - Team and Vehicle` is found in `photos`
+* `Performance Videos` is found in `video`
+* `Engineering Factor` is found in `build` and `README`
+
+
 ### Who We Are
 Team V^3 is an aspiring group of high school and university students who aim to be leaders in the future of autonomous vehicles. By taking the initiative to take part in the WRO Future Engineers challenge, we hope to gain experience in this field of engineering and problem-solving. We have been exposed to many robotic and logical challenges through Zebra Robotics, where we participated in many problems, such as WRO Robomissions, First LEGO League, and VEX Robotics Competition. Our goals for this season are the following:
 - Gain knowledge in the field of autonomous vehicles
@@ -31,7 +39,7 @@ One of these was a larger robot with the usage of many more sensors and parts. H
 
 |   | Pros | Cons |
 | - | ----------| ----------|
-| Old Robot | <ul><li>Allows for the attachment of larger sensors</li><li>Faster robot due to the larger, more powerful motors</li></ul> | <ul><li>Bad maneuverability due to size, causing a larger turning radius</li><li>Excessive use of unnecessary sensors</li></ul> |
+| Old Robot | <ul><li>Allows for the attachment of larger sensors</li><li>Faster robot due to the larger, more powerful motors</li></ul> | <ul><li>Bad maneuverability due to size, causing a larger turning radius</li><li>Excessive use of unnecessary sensors</li><li>Not enough ports due to the sheer number of sensors</li></ul> |
 | New Robot | <ul><li>Smaller and more compact</li><li>Better maneuverability and sharper turning radius</li><li>More effective use of sensors and gets rid of any unnecessary parts</li></ul> | <ul><li>Slower speed due to less powerful motors</li><li>Restrictions to the size of sensors and parts we can use</li></ul> |
 
 | Old Robot | New Robot |
