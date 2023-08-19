@@ -81,8 +81,6 @@ public:
     int col = 0;  //0: White, 1: Orange, 2: Blue
     if (blue > 90 && red < 60) { col = 2; }
     if (red > 80 && blue < 55) { col = 1; }
-    Serial.println(blue);
-    Serial.println(red);
     return col;
   }
 
@@ -252,7 +250,7 @@ public:
 // Constructs an instance of the classes
 Chassis chassis(5, 6, 7, 9); // For movement
 rgbSensor rgbSense; // For sensing lines on the mat
-const int irPorts[3] = {2, A0, 4}; // Ports for the IR sensors
+const int irPorts[3] = {2, A1, 4}; // Ports for the IR sensors
 IRSensors irSensors(irPorts); // For detecting distance in the front and sides
 Gyro gyro; // For detecting the angle of our robot
 Camera camera; // For getting the obstacles
@@ -265,6 +263,12 @@ int dir = 0; // Stores the direction of our robot: | 0: Undecided | 1: Clockwise
 int cornerScanDelay = 0; // Stores time of last line detected for time between corners
 bool cornerDetected = false; // Boolean to store if the line has been detected
 float steer = 0.0;
+Block prevObj; // Stores the last blcok
+Block prevObj2; // Stores the last passed block
+Block closeBlock;
+int target = 0; // Stores the target position of the blocks
+float err = 0; // Stores the error for following the object
+const float kP = -0.35; // Stores the kP for following the object
 
 void setup()
 {
@@ -274,6 +278,7 @@ void setup()
   pinMode(buttonPort, INPUT);
 
   // Sets up the electronic components
+  Serial.println("ABC");
   chassis.attachServo();
   chassis.steer(30);
   rgbSense.setup();
@@ -287,14 +292,14 @@ void setup()
   // Start the program once the button is pressed
   while (!digitalRead(buttonPort))
   {
+    Serial.println(irSensors.getDistance(1));
     delay(5);
   }
 }
 
 void open()
 {
-  speed+=255;
-  speed = min(speed, 255); // Sets max speed to 225
+  speed = 255; // Sets speed to 255
 
   steer = -1; // Steering is set to straight
 
@@ -316,23 +321,21 @@ void open()
     }
 
     // Waits until the front IR sensor does not see anything
-    // while (irSensors.getDistance(1)<75)
-    // {
-    //   gyro.updateGyro();
-    // }
-
-    delay(1500);
+    while (irSensors.getDistance(1)<50)
+    {
+      // gyro.updateGyro();
+    }
 
     cornerDetected = false; // Resets cornerDetected variable until the line is seen again
   }
 
-  if (rgbSense.getColor()==dir && dir!=0)
+  if (rgbSense.getColor()==dir && dir!=0 && millis()-cornerScanDelay>2000)
   { // Checks if the line is seen and if the time after the last scan was greater than 2000ms
-    delay(200);
+    delay(60);
     cornerCount++; // Increases the amount of corners we have passed
     if (cornerCount==12)
     { // If the gyro angle says 3 laps are finished, stop the robot after some time
-      endTime = millis()+5000;
+      endTime = millis()+3500;
     }
 
     cornerDetected = true; // Flags the cornerDetected variable as true
@@ -362,11 +365,139 @@ void open()
 
 void challenge()
 {
-  gyro.updateGyro(); // Update the gyro
+  speed = 255; // Sets speed to 255
+
+  steer = -1; // Steering is set to straight
+
+  if (dir==0)
+  { // Rewrites direction to the color of the sensor if the direction is not defined
+    dir = rgbSense.getColor();
+  }
+
+  if (rgbSense.getColor()==dir && dir>0)
+  {
+    cornerCount++;
+    if (cornerCount==12)
+    {
+      endTime = millis()+3500;
+    }else if (cornerCount==8 && prevObj2.m_signature==1)
+    {
+      dir = 3-dir;
+      while (irSensors.getDistance(1)>40){}
+      chassis.steer(-40);
+      delay(1500);
+      cornerCount+=1;
+      // Insert code for reversing the direction
+    }else
+    {
+      if (camera.getClosest().m_signature==3-dir)
+      {
+        while (irSensors.getDistance(1)>40)
+        {
+          closeBlock = camera.getClosest();
+          if (closeBlock.m_signature<=2){
+            if (closeBlock.m_signature==1)
+            { // Sets the target for the block position on the left based on how far it is if it is red
+              target = (207-closeBlock.m_y)/2+15;
+              // target = 157;
+            }else
+            { // Sets the target for the block position on the right based on how far it is if it is green
+              target = 300.0-(207-closeBlock.m_y)/2;
+              // target = 157;
+            }
+            err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
+            steer = err*kP; // Gets steering value
+            if (steer>30){
+              steer = 30;
+            }else if (steer<-30){
+              steer = -30;
+            }
+            if (closeBlock.m_signature<=2)
+            {
+              prevObj2 = closeBlock;
+            }
+          }else{
+            steer = 0;
+          }
+          chassis.steer(steer);
+        }
+        chassis.steer((1.5-dir)*60);
+        while (irSensors.getDistance(1)<155)
+        {
+          // Insert Waiting Code Here
+        }
+      }else if (camera.getClosest().m_signature>2)
+      {
+        while (irSensors.getDistance(1)>70)
+        {
+          // Insert Waiting Code Here
+        }
+        chassis.steer((1.5-dir)*100);
+        while (irSensors.getDistance(1)<195)
+        {
+          // Insert Waiting Code Here
+        }
+        delay(100);
+      }else
+      {
+        chassis.steer(0);
+        delay(100);
+        chassis.steer((1.5-dir)*40);
+        delay(300);
+      }
+    }
+  }
+
+  closeBlock = camera.getClosest(); // Gets closest block from the camera
+
+  if (closeBlock.m_y>187 && closeBlock.m_signature<=2)
+  { // If the current block is different from the old block, set the most recent block to the old block
+    prevObj2 = closeBlock;
+  }
+  
+  if (closeBlock.m_signature<=2)
+  { 
+    if (closeBlock.m_signature==1)
+    { // Sets the target for the block position on the left based on how far it is if it is red
+      target = (207-closeBlock.m_y)/2+15;
+      // target = 157;
+    }else
+    { // Sets the target for the block position on the right based on how far it is if it is green
+      target = 300.0-(207-closeBlock.m_y)/2;
+      // target = 157;
+    }
+    err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
+    steer = err*kP; // Gets steering value
+    if (steer>30){
+      steer = 30;
+    }else if (steer<-30){
+      steer = -30;
+    }
+  }
+
+  if (irSensors.getDistance(0))
+  {
+    steer = 60;
+  }else if (irSensors.getDistance(2))
+  {
+    steer = -60;
+  }
+
+  if (millis()<endTime)
+  { // If the time is not finished, keep moving the robot
+    chassis.steer(steer);
+    chassis.move(speed);
+  }else
+  { // If the time is up, stop the robot
+    chassis.move(0);
+    chassis.steer(0);
+    delay(10000000);
+  }
+
 }
 
 void loop()
 {
-  open();
-  // challenge();
+  // open();
+  challenge();
 }
