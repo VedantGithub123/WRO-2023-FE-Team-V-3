@@ -12,6 +12,7 @@ This repository contains engineering materials of a self-driven vehicle's model 
 * `strategy` contains documentation and diagrams explaining our approach to the problem
 * `video` contains the video.md file with the link to a video where driving demonstration exists
 
+## Rubric Requirements
 * `Mobility Management` is found in `build`, `electrical`, and `models`
 * `Power and Sense Managament` is found in `electrical`
 * `Obstacle Management` is found in `strategy` and `src`
