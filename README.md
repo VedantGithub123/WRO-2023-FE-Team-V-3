@@ -29,10 +29,10 @@ Prior to making this robot, our team went through various different iterations a
 
 One of these was a larger robot with the usage of many more sensors and parts. However, its large nature at 30x20x30cm caused it to be difficult to maneuver and control. All of our efforts were in vain as we faced many hardships and problems when trying to program that robot. Our robot’s turning radius was too large, and it was unable to maneuver around the obstacles while our sensors were placed inconveniently and were unable to correctly and quickly construct an efficient path for our robot to take. We realized that many parts of our robot were unnecessary, especially the sheer size of it, and we ultimately decided to do a complete redesign which led to our final robot design.
 
-|   | Old Robot | New Robot |
+|   | Pros | Cons |
 | - | ----------| ----------|
-| Pros | <ul><li>Allows for the attachment of larger sensors</li><li>Faster robot due to the larger, more powerful motors</li></ul> | <ul><li>Smaller and more compact</li><li>Better maneuverability and sharper turning radius</li><li>More effective use of sensors and gets rid of any unnecessary parts</li></ul>|
-| Cons | 
+| Old Robot | <ul><li>Allows for the attachment of larger sensors</li><li>Faster robot due to the larger, more powerful motors</li></ul> | <ul><li>Bad maneuverability due to size, causing a larger turning radius</li><li>Excessive use of unnecessary sensors</li></ul> |
+| New Robot | <ul><li>Smaller and more compact</li><li>Better maneuverability and sharper turning radius</li><li>More effective use of sensors and gets rid of any unnecessary parts</li></ul> | <ul><li>Slower speed due to less powerful motors</li><li>Restrictions to the size of sensors and parts we can use</li></ul> |
 
 | Old Robot | New Robot |
 | --------- | --------- |
