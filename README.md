@@ -27,7 +27,7 @@ Prior to making this robot, our team went through various different iterations a
 - Speed is not the first priority for this challenges
 - Maneuverability is key to solving the obstacle challenge
 
-One of these was a larger robot with the usage of many more sensors and parts. However, its large nature at 30x20x30cm caused it to be difficult to maneuver and control. All of our efforts were in vain as we faced many hardships and problems when trying to program that robot. Our robot’s turning radius was too large, and it was unable to maneuver around the obstacles while our sensors were placed inconveniently and were unable to correctly and quickly construct an efficient path for our robot to take. We realized that many parts of our robot were unnecessary, especially the sheer size of it, and we ultimately decided to do a complete redesign which led to our final robot design.
+One of these was a larger robot with the usage of many more sensors and parts. However, its large nature at 30x20x30cm caused it to be difficult to maneuver and control. All of our efforts were in vain as we faced many hardships and problems when trying to program that robot. Our robot’s turning radius was too large, and it was unable to maneuver around the obstacles while our sensors were placed inconveniently and were unable to correctly and quickly construct an efficient path for our robot to take. We realized that many parts of our robot were unnecessary, especially the sheer size of it, and we ultimately decided to do a complete redesign which led to our final robot design. A summary of the reasons for our redesign can be found below:
 
 |   | Pros | Cons |
 | - | ----------| ----------|
