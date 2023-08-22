@@ -98,7 +98,7 @@ class IRSensors
 public:
   IRSensors(int ports[])
   {
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
       irPorts[i] = ports[i];
     }
@@ -106,12 +106,28 @@ public:
 
   int getDistance(int port)
   {
-    port = max(min(port, 2), 0);
-    if (irPorts[port]>13)
+    port = max(min(port, 3), 0);
+    if (irPorts[port]==A1)
     {
       return (11.63417 + (241.6444 - 11.63417)/pow((1 + (analogRead(irPorts[port])*5.0/1023.0/0.5075672)), 1.868922))*1.5;
+    }else if (port==3)
+    {
+      return 1-digitalRead(port);
     }
-    return 1-digitalRead(irPorts[port]);
+    return analogRead(irPorts[port])>150;
+  }
+
+  int getDistanceClose(int port)
+  {
+    port = max(min(port, 3), 0);
+    if (irPorts[port]==A1)
+    {
+      return (11.63417 + (241.6444 - 11.63417)/pow((1 + (analogRead(irPorts[port])*5.0/1023.0/0.5075672)), 1.868922))*1.5;
+    }else if (port==3)
+    {
+      return 1-digitalRead(port);
+    }
+    return analogRead(irPorts[port])>600;
   }
 
   void setup()
@@ -124,7 +140,7 @@ public:
       }
     }
   }
-  int irPorts[3];
+  int irPorts[4];
 };
 
 // Creates the Gyro class which is used to measure our heading
@@ -197,16 +213,6 @@ public:
   int L3G4200D_Address = 105;
 };
 
-class ColorBlock : Block 
-{
-  public:
-    void getPosition(int &x, int &y)
-    {
-      x = this->m_x;
-      y = this->m_y - (this->m_height / 2);
-    }
-};
-
 // Creates the Camera class which is used to get certain blocks from the PixyCam 2.1
 class Camera
 {
@@ -250,7 +256,7 @@ public:
 // Constructs an instance of the classes
 Chassis chassis(5, 6, 7, 9); // For movement
 rgbSensor rgbSense; // For sensing lines on the mat
-const int irPorts[3] = {2, A1, 4}; // Ports for the IR sensors
+const int irPorts[4] = {A0, A1, A2, 2}; // Ports for the IR sensors
 IRSensors irSensors(irPorts); // For detecting distance in the front and sides
 Gyro gyro; // For detecting the angle of our robot
 Camera camera; // For getting the obstacles
@@ -279,19 +285,12 @@ void setup()
 
   // Sets the pin mode for the button
   pinMode(buttonPort, INPUT);
-
   // Sets up the electronic components
   Serial.println("ABC");
   chassis.attachServo();
   chassis.steer(30);
   rgbSense.setup();
   irSensors.setup();
-
-
-
-
-
-
   gyro.setup();
   // gyro.calibrate();
   camera.setup();
@@ -301,8 +300,8 @@ void setup()
   // Start the program once the button is pressed
   while (!digitalRead(buttonPort))
   {
-    camera.getClosest().print();
-    // Serial.println(irSensors.getDistance(1));
+    // camera.getClosest().print();
+    Serial.println(irSensors.getDistance(0));
     delay(5);
   }
 }
@@ -409,7 +408,7 @@ void challenge()
   {
     closeBlock = camera.getClosest(); // Gets closest block from the camera
 
-    if (closeBlock.m_y>187 && closeBlock.m_signature<=2)
+    if (closeBlock.m_y>180 && closeBlock.m_signature<=2)
     { // Set the most recent block to the old block
       prevObj2 = closeBlock;
       objDelay = millis();
@@ -436,7 +435,7 @@ void challenge()
     }
   }
 
-  if (rgbSense.getColor()==dir && dir>0 && millis()-cornerScanDelay>500)
+  if (rgbSense.getColor()==dir && dir>0 && millis()-cornerScanDelay>1000)
   { // Checks if the color is the same is the direction to travel and if it has been 1.5 seconds past the start or the reversing of the 3rd lap
     cornerCount++; // Increments 1 to cornerCount
     if (cornerCount==12)
@@ -448,10 +447,10 @@ void challenge()
       dir = 3-dir; // sets the direction to the opposite way
       while (irSensors.getDistance(1)>40){} // Get close to the front wall
       // Turn for 1.5 seconds
-      chassis.steer(-35);
-      delay(1500);
-      chassis.steer(0);
-      delay(300);
+      chassis.steer(-40);
+      delay(1400);
+      // chassis.steer(0);
+      // delay(300);
       cornerCount+=1;
       cornerScanDelay = millis();
     }else
@@ -490,7 +489,7 @@ void challenge()
         // Turn until the robot sees nothing
         chassis.steer((1.5-dir)*60);
         while (irSensors.getDistance(1)<155){}
-      }else if (camera.getClosest().m_signature>2)
+      }else if (camera.getClosest().m_signature>1)
       { // If the robot sees nothing, go to the middle of the corner and turn
         chassis.steer(0);
         while (irSensors.getDistance(1)>100)
@@ -518,10 +517,24 @@ void challenge()
 
   if (irSensors.getDistance(0))
   {
-    steer = 50;
+    if(closeBlock.m_signature != 1)
+      steer = 40;
+    else if (irSensors.getDistanceClose(0)) 
+      steer = 50;
   }else if (irSensors.getDistance(2))
   {
-    steer = -50;
+    if(closeBlock.m_signature != 2)
+      steer = -40;
+    else if (irSensors.getDistanceClose(2)) 
+      steer = -50;
+  }
+
+  if (irSensors.getDistance(3))
+  {
+    chassis.steer(0);
+    chassis.move(-255);
+    delay(800);
+    chassis.move(255);
   }
 
   if (millis()<endTime)
@@ -539,6 +552,6 @@ void challenge()
 
 void loop()
 {
-  open();
-  // challenge();
+  // open();
+  challenge();
 }
