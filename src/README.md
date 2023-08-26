@@ -30,7 +30,7 @@ The third and final method in our class attaches the servo port to the instance 
 ### rgbSensor Class
 The rgbSensor class interfaces with the TCS34725 RGB sensor using I2C (Inter-Integrated Circuit) communication to get the RGB values from the sensor. This class has one member variable, the "Adafruit_TCS34725 tcs", which controls the RGB sensor.
 
-The first method in this class is the "getColor" function which returns the detected colour. The following code gets the RGB values and sets the corresponding variable to the values. `tcs.getRGB(&red, &green, &blue);` We then check the blue and red values to determine if the sensor is seeing blue, orange, or white in the following code. `if (blue > 90 && red < 60) { col = 2; } if (red > 80 && blue < 55) { col = 1; }`
+The first method in this class is the "getColor" function which returns the detected colour. The following code gets the RGB values and sets the corresponding variable to the values. `tcs.getRGB(&red, &green, &blue);` We then check the blue and red values to determine if the sensor is seeing blue, orange, or white in the following code. `if (blue > 90 && red < 60) { col = 2; } if (red > 80 && blue < 60) { col = 1; }`
 
 The second method in this class is the "setup" function, which starts the TCS34725 sensor.
 
@@ -39,9 +39,9 @@ This class is used to interface with the IR sensors that we are using. The membe
 
 The constructor of this class takes in an array as input and assigns the values of the array to the irPorts array.
 
-The first method of the class is the "getDistance" function which returns values based on which sensor it is using. If the sensor is the one in the front used for sensing long distances, we map the voltage to a function which returns the length. This function is implemented in the following code. `return (11.63417 + (241.6444 - 11.63417)/pow((1 + (analogRead(irPorts[port])*5.0/1023.0/0.5075672)), 1.868922))*1.5;` If the sensor is the one in the front and is used for short distances, we return one if it senses something and zero if not. Finally, if none of those are done, we return one if the sensor output voltage is larger than 0.73V and 0 if not.
+The first method of the class is the "getDistance" function which returns values based on which sensor it is using. If the sensor is the one in the front used for sensing long distances, we map the voltage to a function which returns the length. This function is implemented in the following code. `return (11.63417 + (241.6444 - 11.63417)/pow((1 + (analogRead(irPorts[port])*5.0/1023.0/0.5075672)), 1.868922))*1.5;` If the sensor is the one in the front and is used for short distances, we return one if it senses something and zero if not. Finally, if none of those are done, we return one if the sensor output voltage is larger than 0.93V and 0 if not.
 
-The second method in this class is the "getDistanceClose" function which acts the same as the "getDistance" function but only returns one for the default case if the voltage is larger than 2.92V.
+The second method in this class is the "getDistanceClose" function which acts the same as the "getDistance" function but only returns one for the default case if the voltage is larger than 3.4V.
 
 The final function in this class is the setup function which sets the pin modes for all the ports.
 
@@ -58,18 +58,46 @@ The fourth method is the "getGyroChange" function which gets the angular velocit
 
 The fifth method in the Gyro class is the "getAngle" function which returns the robot's angle by returning the "angle" variable stored in the Gyro class.
 
-The sixth method in the Gyro class is the calibrate function which takes 4000 sample inputs and finds the average. This is the drift of the gyro which we store in the drift variable for later use. We do the calibration with the following code. `for (int i = 0; i < 4000; i++){ drift +=getGyroChange(); } drift /= 4000; prevTime = micros();`
+The sixth method in the Gyro class is the calibrate function which takes 6000 sample inputs and finds the average. This is the drift of the gyro which we store in the drift variable for later use. We do the calibration with the following code. `for (int i = 0; i < 6000; i++){ drift +=getGyroChange(); } drift /= 6000; prevTime = micros();`
 
-The final function in the class is the "updateGyro" function which updates the angle of the gyro when called. It does this by multiplying the value of the gyro by the time since the last call and then by a constant and adding that to the angle variable. This is done in the following code. `angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286; prevTime = micros();`
+The final function in the class is the "updateGyro" function which updates the angle of the gyro when called. It does this by multiplying the value of the gyro by the time since the last call and then by a constant and adding that to the angle variable. This is done in the following code. `angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8; prevTime = micros();`
 
 ### Camera Class
 The Camera class interfaces with the PixyCam 2.1 through SPI (Serial Peripheral Interface) and gets the detected blocks. The member variable in this function is the "pixy" variable, an instance of the Pixy2 class provided by the "Pixy2.h" library. 
 
 The first method in the class is the "setup" function which initializes the PixyCam 2.1. This is done by using the "pixy.init()" function provided in the library.
 
-The second method in the Camera class is the "getClosest" function which returns the closest block to the robot. To get the nearest block, we go through the array of blocks and store the index and value of the block with the largest y value. We then return that block as shown in this code. `pixy.ccc.getBlocks(); int lowInd = 0; int lowVal = pixy.ccc.blocks[0].m_y; if (pixy.ccc.numBlocks) { for (int i = 1; i<pixy.ccc.numBlocks; i++) { if (pixy.ccc.blocks[i].m_y>lowVal) { lowVal = pixy.ccc.blocks[i].m_y; lowInd = i; } } }`
+The second method in the Camera class is the "getClosest" function which returns the closest block to the robot. The PixyCam 2.1 has the closest block as the first element in the array of blocks so we return that first block as shown in the following code `pixy.ccc.getBlocks(); return pixy.ccc.blocks[0];`
 
 ## Setup Code
+In the setup of our program, we have a multitude of global functions and variables which we use in our main program. 
+
+Arduino requires us to have a `void setup()` function which runs once when the Arduino is turned on and a `void loop` function which runs repeatedly until the Arduino turns off. In our code, we keep the setup of all the sensors and the waiting until the button is pressed in the `setup` function and we use the `loop` function to run our code. The functions which we use in our code are the `void delay_2` function which takes in an integer value and delays for that amount of milliseconds while updating the gyro sensor. We use this function instead of the default `delay` function since it allows our gyro sensor to constantly update. We then have two separate functions for each challenge. The `void open` function contains the code for the open challenge and the `void obstacle` contains the code for the obstacle challenge. We implement these functions in the `loop` function by commenting which function we are not running and uncommenting the function that we are running.
+
+The global varables that we have in our code are the following
+| Vairable Name | Type | Purpose |
+| ------------- | ---- | ------- |
+| chassis | Chassis | Creates an instance of the Chassis class for movement |
+| rgbSense | rgbSensor | Creates an instance of the rgbSensor class for sensing lines |
+| irPorts | int[4] | Stores the values of the IR sensors' ports |
+| irSensors | IRSensors | Creates an instance of the IRSensors class to use the IR sensors |
+| gyro | Gyro | Creates an instance of the Gyro class to measure the robot's angle |
+| camera | Camera | Creates an instance of the Camera class to detect obstacles |
+| buttonPort | int | Stores the port of the button |
+| speed | int | Defines the speed for the robot and is used for acceleration |
+| cornerCount | int | Stores the number of corners passed |
+| endTime | unsigned long int | Stores the time when our robot should stop moving |
+| dir | int | Stores the direction of the lap |
+| cornerScanDelay | int | Stores the time a corner was passed |
+| cornerDetected | bool | Stores if a line has been detected |
+| steer | float | Stores the steering value |
+| prevObj | Block | Stores the previous block |
+| closeBlock | Block | Stores the closest block |
+| target | int | stores the target position for the blocks |
+| err | float | Stores the rror for following the object |
+| kP | float | Stores the kP value for following |
+| objDelay | int | Stores the time when an object is passed |
+| targetAngle | int | Stores the target angle for gyro following |
 
 ## Open Challenge Code
 
