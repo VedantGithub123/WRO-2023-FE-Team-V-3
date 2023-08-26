@@ -225,33 +225,20 @@ public:
   Block getClosest()
   {
     pixy.ccc.getBlocks();
-
-    int lowInd = 0;
-    int lowVal = pixy.ccc.blocks[0].m_y;
-    if (pixy.ccc.numBlocks)
-    {
-      for (int i = 1; i<pixy.ccc.numBlocks; i++)
-      {
-        if (pixy.ccc.blocks[i].m_y>lowVal)
-        {
-          lowVal = pixy.ccc.blocks[i].m_y;
-          lowInd = i;
-        }
-      }
-    }
-
     return pixy.ccc.blocks[0];
-  }
-
-  int getObjectNum()
-  {
-    pixy.ccc.getBlocks();
-    return pixy.ccc.numBlocks;
   }
 
   Pixy2 pixy;
 };
 
+
+void delay_2(int s)
+{ // Function to update the gyro while delaying
+  unsigned long int x = millis();
+  while (millis()-x<s){
+    gyro.updateGyro();
+  }
+}
 
 // Constructs an instance of the classes
 Chassis chassis(5, 6, 7, 9); // For movement
@@ -262,23 +249,19 @@ Gyro gyro; // For detecting the angle of our robot
 Camera camera; // For getting the obstacles
 const int buttonPort = 8; // Pin for the pushbutton
 
-int speed = 0; // Defines the speed for the robot and is used for acceleration
+int speed = 0; // Defines the speed for the robot
 int cornerCount = 0; // Number of corners passed
-unsigned long int endTime = 10000000000; // 
+unsigned long int endTime = 10000000000; // Stores the time when our robot should stop moving
 int dir = 0; // Stores the direction of our robot: | 0: Undecided | 1: Clockwise | 2: Counterclockwise |
 int cornerScanDelay = 0; // Stores time of last line detected for time between corners
 bool cornerDetected = false; // Boolean to store if the line has been detected
-float steer = 0.0;
-Block prevObj; // Stores the last blcok
-Block prevObj2; // Stores the last passed block
-Block closeBlock;
+float steer = 0.0; // Stores the steering
+Block prevObj; // Stores the last passed blcok
+Block closeBlock; // Stores the closest block to the robot
 int target = 0; // Stores the target position of the blocks
 float err = 0; // Stores the error for following the object
 const float kP = -0.35; // Stores the kP for following the object
-
-const int CURVE = 0; // Amount to curve when going straight
-int objDelay = 0;
-
+int objDelay = 0; // Stores the time when the object is passed
 int targetAngle = 0; // Angle to turn gyro
 
 void setup()
@@ -306,13 +289,6 @@ void setup()
     // camera.getClosest().print();
     gyro.updateGyro();
     // Serial.println(gyro.getAngle());
-  }
-}
-
-void delay_2(int s){
-  unsigned long int x = millis();
-  while (millis()-x<s){
-    gyro.updateGyro();
   }
 }
 
@@ -382,9 +358,7 @@ void open()
   }
 }
 
-
-
-void obstacle_2()
+void obstacle()
 {
 
   speed = 255; // Sets speed to 255
@@ -395,7 +369,7 @@ void obstacle_2()
 
   if (closeBlock.m_y>180 && closeBlock.m_signature<=2)
   { // Set the most recent block to the old block
-    prevObj2 = closeBlock;
+    prevObj = closeBlock;
     objDelay = millis();
   }
 
@@ -443,7 +417,7 @@ void obstacle_2()
     { // If all the corners are passed, set the program to stop after 3.8 seconds
       endTime = millis()+3800;
     }
-    if (cornerCount==8 && prevObj2.m_signature==1)
+    if (cornerCount==8 && prevObj.m_signature==1)
     { // If 2 laps are finished and the last object was red, run the turning sequence
       targetAngle += (dir == 1 ? 180 : -180) ;
       dir = 3-dir; // sets the direction to the opposite way
@@ -496,7 +470,7 @@ void obstacle_2()
             }
             if (closeBlock.m_signature<=2)
             {
-              prevObj2 = closeBlock;
+              prevObj = closeBlock;
             }
           }else{
             steer = 0;
@@ -584,7 +558,6 @@ void obstacle_2()
 void loop()
 {
   // open();
-  // challenge();
-  obstacle_2();
+  obstacle();
 
 }
