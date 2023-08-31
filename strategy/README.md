@@ -20,7 +20,7 @@ For the obstacle challenge, we have two strategies to approaching the problem. T
 
 ### Strategy 1
 
-The first strategy to approach the obstacle challenge is to keep the closest color on the corresponding side of the robot. This is implemented by getting the x-position of the object on the camera and accordingly changing the steering to make sure the object is on the correct side. The turning and stopping will use the same logic as the open challenge. In order to know how much to steer when we see the object, we will use a PID control loop to ensure that our movements are efficient.
+The first strategy to approach the obstacle challenge is to keep the closest color on the corresponding side of the robot. This is implemented by getting the x-position of the object on the camera and accordingly changing the steering to make sure the object is on the correct side. The turning and stopping will use the same logic as the open challenge. In order to know how much to steer when we see the object, we will use a proportional control loop to ensure that our movements are efficient.
 
 | Obstacle Challenge Simple Approach |
 | ---------------------------------- |
