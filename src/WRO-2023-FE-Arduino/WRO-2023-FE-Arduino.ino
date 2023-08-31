@@ -274,12 +274,13 @@ int dir = 0; // Stores the direction of our robot: | 0: Undecided | 1: Clockwise
 unsigned long int cornerScanDelay = 0; // Stores time of last line detected for time between corners
 bool cornerDetected = false; // Boolean to store if the line has been detected
 float steer = 0.0; // Stores the steering
-Block prevObj; // Stores the last passed blcok
+Block prevObj; // Stores the last passed block
 Block closeBlock; // Stores the closest block to the robot
 int target = 0; // Stores the target position of the blocks
 float err = 0; // Stores the error for following the object
 const float kP = -0.35; // Stores the kP for following the object
 int targetAngle = 0; // Angle to turn gyro
+bool caughtOnWall = false; // Stores if the robot is wall following
 
 void setup()
 {
@@ -297,88 +298,16 @@ void setup()
   gyro.setup();
   gyro.calibrate();
   camera.setup();
-  // delay(1000);
   chassis.steer(0); // Aligns steering when everything is ready
 
   // Start the program once the button is pressed
   while (!digitalRead(buttonPort))
   {
-    // camera.getClosest().print();
-    gyro.updateGyro();
     delay_2(10);
-    // Serial.println(irSensors.getFarDistance(2));
-    // Serial.println(gyro.getAngle());
   }
 }
 
 void open()
-{
-  speed = 255; // Sets speed to 255
-
-  steer = -1; // Steering is set to straight
-
-  if (dir==0)
-  { // Rewrites direction to the color of the sensor if the direction is not defined
-    dir = rgbSense.getColor();
-  }
-
-  if(cornerDetected && irSensors.getDistance(1)<40)
-  { // Starts turning when the corner is detected and the robot is close to the wall
-    
-    // Turns and sets the bias based on which direction the robot is moving
-    if (dir==1)
-    {
-      chassis.steer(30);
-    }else
-    {
-      chassis.steer(-30);
-    }
-
-    // Waits until the front IR sensor does not see anything
-    while (irSensors.getDistance(1)<50)
-    {
-      // gyro.updateGyro();
-    }
-
-    cornerDetected = false; // Resets cornerDetected variable until the line is seen again
-  }
-
-  if (rgbSense.getColor()==dir && dir!=0 && millis()-cornerScanDelay>2000)
-  { // Checks if the line is seen and if the time after the last scan was greater than 2000ms
-    delay(60);
-    cornerCount++; // Increases the amount of corners we have passed
-    if (cornerCount==12)
-    { // If the gyro angle says 3 laps are finished, stop the robot after some time
-      endTime = millis()+3500;
-    }
-
-    cornerDetected = true; // Flags the cornerDetected variable as true
-    
-    cornerScanDelay = millis(); // Updates cornerScanDelay with the current time
-  }
-
-  if (irSensors.getDistance(0))
-  {
-    steer = 30;
-  }else if (irSensors.getDistance(2))
-  {
-    steer = -30;
-  }
-
-  if (millis()<endTime)
-  { // If the time is not finished, keep moving the robot
-    chassis.steer(steer);
-    chassis.move(speed);
-  }else
-  { // If the time is up, stop the robot
-    chassis.move(0);
-    chassis.steer(0);
-    delay(100000000);
-  }
-}
-
-bool caughtOnWall = false;
-void open_2()
 {
   steer = -1;
   speed = 255;
@@ -541,17 +470,6 @@ void obstacle()
     }else if (steer<-15){
       steer = -15;
     }
-
-    // err = targetAngle - gyro.getAngle();
-    // if(abs(err) > 20)
-    // {
-    //   steer = err*2.0;
-    // }
-    // if (steer>20){
-    //   steer = 20;
-    // }else if (steer<-20){
-    //   steer = -20;
-    // }
     delay_2(1);
   }
 
@@ -560,14 +478,14 @@ void obstacle()
     cornerCount++; // Increments 1 to cornerCount
     if (cornerCount>=12)
     { // If all the corners are passed, set the program to stop after 3.8 seconds
-      endTime = millis()+4000;
+      endTime = millis()+3500;
     }
     if (cornerCount==8 && prevObj.m_signature==1)
     { // If 2 laps are finished and the last object was red, run the turning sequence
       targetAngle -= 180 ;
       dir = 3-dir; // sets the direction to the opposite way
       while (irSensors.getDistance(1)>50){
-        err = targetAngle + 180 - gyro.getAngle();
+        err = targetAngle + 170 - gyro.getAngle();
         steer = err*2.0;
         if (steer>20){
           steer = 20;
@@ -613,24 +531,8 @@ void obstacle()
       if (check>1)
       { // If the block in front says that you need to go from the outside of the lap, run the following code
         unsigned long int prevTime = millis();
-        while ((irSensors.getDistance(1)>40 || millis()-prevTime<1000) && millis()-prevTime<2500)
+        while ((irSensors.getDistance(1)>35 || millis()-prevTime<1000) && millis()-prevTime<2500)
         { // Follow the block until the robot is close to the wall
-          // err = (dir == 1 ? targetAngle - 90 : targetAngle + 90) - gyro.getAngle();
-          // steer = err*2.0;
-          // if (steer>20){
-          //   steer = 20;
-          // }else if (steer<-20){
-          //   steer = -20;
-          // }
-
-          // if (irSensors.getFarDistance(0) <= 15)
-          // {
-          //   steer = 25;
-          // }else if (irSensors.getFarDistance(2) <= 15)
-          // {
-          //   steer = -25;
-          // }
-          // delay_2(1);
 
           closeBlock = camera.getClosestBlock();
           if (closeBlock.m_signature<=2){
@@ -675,12 +577,6 @@ void obstacle()
         while (abs(gyro.getAngle())<(abs(targetAngle) - 30)){
           gyro.updateGyro();
         }
-        // // Curve a bit to the center
-        // chassis.steer(0);
-        // delay_2(200);
-        // chassis.steer((dir-1.5)*50);
-        // delay_2(300);
-        // chassis.steer(0);
       }
       else
       { // If the robot sees nothing, turn
@@ -719,7 +615,7 @@ void obstacle()
     chassis.move(-255);
     delay_2(3000);
     chassis.move(255);
-    endTime+=3000;
+    endTime+=2000;
   }
 
   gyro.updateGyro();
@@ -739,6 +635,5 @@ void obstacle()
 void loop()
 {
   // open();
-  // open_2();
   obstacle();
 }
