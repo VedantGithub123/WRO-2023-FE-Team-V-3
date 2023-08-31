@@ -207,7 +207,7 @@ public:
 
   void updateGyro()
   {
-    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8 * 90/95;
+    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8.2;
     prevTime = micros();
     Serial.println(getAngle());
   }
@@ -494,7 +494,12 @@ void obstacle()
   }
   else
   {
-    closeBlock = camera.getClosest(); // Gets closest block or line from the camera
+    closeBlock = camera.getClosestBlock(); // Gets closest block from the camera
+    gyro.updateGyro();
+    if(closeBlock.m_signature != prevObj.m_signature) // If the current closest block matches the prev block ignore the line logic
+    {
+      closeBlock = camera.getClosest(); // Gets closest block or line from the camera
+    }
   }
   if(closeBlock.m_signature <= 2)
   {
@@ -531,10 +536,10 @@ void obstacle()
     // If there is nothing to see wall follow on outside wall 
     err = 60 - irSensors.getFarDistance(dir == 1 ? 0 : 2);
     steer = err * (dir == 1 ? 1.0 : -1.0) * 1.0; // 1.0 is the kP
-    if (steer>10){
-      steer = 10;
-    }else if (steer<-10){
-      steer = -10;
+    if (steer>15){
+      steer = 15;
+    }else if (steer<-15){
+      steer = -15;
     }
 
     // err = targetAngle - gyro.getAngle();
@@ -577,12 +582,12 @@ void obstacle()
       float tempAngle = gyro.getAngle();
       chassis.steer(-40);
       if(dir == 1){
-        while (abs(gyro.getAngle())<abs(targetAngle) - 20){ // Underturn on orange direction
+        while (abs(gyro.getAngle())<abs(targetAngle) + 20){ // Underturn on orange direction
           gyro.updateGyro();
         }
       }
       else{
-        while (abs(gyro.getAngle())>abs(targetAngle) + 20){ // Overturn on blue direction
+        while (abs(gyro.getAngle())>abs(targetAngle) - 20){ // Overturn on blue direction
           gyro.updateGyro();
         }
       }
@@ -602,6 +607,7 @@ void obstacle()
         else if (blockSignature==dir){
           check2++;
         }
+        gyro.updateGyro();
       }
       targetAngle += (dir == 1 ? 90 : -90) ;
       if (check>1)
@@ -609,45 +615,52 @@ void obstacle()
         unsigned long int prevTime = millis();
         while ((irSensors.getDistance(1)>40 || millis()-prevTime<1000) && millis()-prevTime<2500)
         { // Follow the block until the robot is close to the wall
-          err = (dir == 1 ? targetAngle - 90 : targetAngle + 90) - gyro.getAngle();
-          steer = err*2.0;
-          if (steer>20){
-            steer = 20;
-          }else if (steer<-20){
-            steer = -20;
-          }
-          delay_2(1);
-
-          // closeBlock = camera.getClosestBlock();
-          // if (closeBlock.m_signature<=2){
-          //   if (closeBlock.m_signature==1)
-          //   { // Sets the target for the block position on the left based on how far it is if it is red
-          //     target = (207-closeBlock.m_y)/2+15;
-          //     target = 0;
-          //   }else
-          //   { // Sets the target for the block position on the right based on how far it is if it is green
-          //     target = 300.0-(207-closeBlock.m_y)/2;
-          //     target = 315;
-          //   }
-          //   err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
-          //   steer = err*kP; // Gets steering value
-          //   if (steer>30){
-          //     steer = 30;
-          //   }else if (steer<-30){
-          //     steer = -30;
-          //   }
-          //   if (closeBlock.m_signature<=2)
-          //   {
-          //     prevObj = closeBlock;
-          //   }
-          // }else{
-          //   steer = 0;
+          // err = (dir == 1 ? targetAngle - 90 : targetAngle + 90) - gyro.getAngle();
+          // steer = err*2.0;
+          // if (steer>20){
+          //   steer = 20;
+          // }else if (steer<-20){
+          //   steer = -20;
           // }
+
+          // if (irSensors.getFarDistance(0) <= 15)
+          // {
+          //   steer = 25;
+          // }else if (irSensors.getFarDistance(2) <= 15)
+          // {
+          //   steer = -25;
+          // }
+          // delay_2(1);
+
+          closeBlock = camera.getClosestBlock();
+          if (closeBlock.m_signature<=2){
+            if (closeBlock.m_signature==1)
+            { // Sets the target for the block position on the left based on how far it is if it is red
+              target = (207-closeBlock.m_y)/2+15;
+              target = 0;
+            }else
+            { // Sets the target for the block position on the right based on how far it is if it is green
+              target = 300.0-(207-closeBlock.m_y)/2;
+            }
+            err = target - (int)closeBlock.m_x; // Sets the error to the difference between the current position and the target
+            steer = err*kP; // Gets steering value
+            if (steer>30){
+              steer = 30;
+            }else if (steer<-30){
+              steer = -30;
+            }
+            if (closeBlock.m_signature<=2)
+            {
+              prevObj = closeBlock;
+            }
+          }else{
+            steer = 0;
+          }
           chassis.steer(steer);
           gyro.updateGyro();
         }
         // Turn until the robot sees nothing
-        chassis.steer((1.5-dir)*80);
+        chassis.steer((1.5-dir)*70);
         while (irSensors.getDistance(1)<155){
           gyro.updateGyro();
         }
@@ -674,7 +687,7 @@ void obstacle()
         chassis.steer((1.5-dir)*80);
         int prevTime = millis();
         // gyro.angle = 0;
-        while (abs(gyro.getAngle())<(abs(targetAngle) - 10) && (camera.getClosestBlock().m_signature != 3-dir || abs(gyro.getAngle())<(abs(targetAngle) - 40))){
+        while (abs(gyro.getAngle())<(abs(targetAngle) + 10) && (camera.getClosestBlock().m_signature != 3-dir || abs(gyro.getAngle())<(abs(targetAngle) - 40))){
           gyro.updateGyro();
         }
       }
