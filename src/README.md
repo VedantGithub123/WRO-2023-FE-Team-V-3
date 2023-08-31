@@ -43,6 +43,8 @@ The first method of the class is the "getDistance" function which returns values
 
 The second method in this class is the "getDistanceClose" function which acts the same as the "getDistance" function but only returns one for the default case if the voltage is larger than 3.4V.
 
+The third method in this class is the "getFarDistance" function which maps the voltage read from the IR sensor to a function to return the distance seen. This is done with the following code. `return ((138.672)/pow(1.0 + 5.56591*(analogRead(irPorts[port])/200.0), 1.24888)) + (-0.0340614 * pow(analogRead(irPorts[port])/200.0, 3));`
+
 The final function in this class is the setup function which sets the pin modes for all the ports.
 
 ### Gyro Class
@@ -60,14 +62,16 @@ The fifth method in the Gyro class is the "getAngle" function which returns the 
 
 The sixth method in the Gyro class is the calibrate function which takes 6000 sample inputs and finds the average. This is the drift of the gyro which we store in the drift variable for later use. We do the calibration with the following code. `for (int i = 0; i < 6000; i++){ drift +=getGyroChange(); } drift /= 6000; prevTime = micros();`
 
-The final function in the class is the "updateGyro" function which updates the angle of the gyro when called. It does this by multiplying the value of the gyro by the time since the last call and then by a constant and adding that to the angle variable. This is done in the following code. `angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8; prevTime = micros();`
+The final function in the class is the "updateGyro" function which updates the angle of the gyro when called. It does this by multiplying the value of the gyro by the time since the last call and then by a constant and adding that to the angle variable. This is done in the following code. `angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8 * 90/95; prevTime = micros();`
 
 ### Camera Class
 The Camera class interfaces with the PixyCam 2.1 through SPI (Serial Peripheral Interface) and gets the detected blocks. The member variable in this function is the "pixy" variable, an instance of the Pixy2 class provided by the "Pixy2.h" library. 
 
 The first method in the class is the "setup" function which initializes the PixyCam 2.1. This is done by using the "pixy.init()" function provided in the library.
 
-The second method in the Camera class is the "getClosest" function which returns the closest block to the robot. The PixyCam 2.1 has the closest block as the first element in the array of blocks so we return that first block as shown in the following code `pixy.ccc.getBlocks(); return pixy.ccc.blocks[0];`
+The second method in the Camera class is the "getClosest" function which returns the closest signature to the robot. The PixyCam 2.1 has the closest signature as the first element in the array of blocks so we return that first signature as shown in the following code `pixy.ccc.getBlocks(); return pixy.ccc.blocks[0];`
+
+The final method in the class is the "getClosestBlock" function which gets the closest signature which is green or red. This is done to ensure that we do not return the line. We do this by going through the array of blocks and if the signature is less that or equal to two, we return that block.
 
 ## Setup Code
 In the setup of our program, we have a multitude of global functions and variables which we use in our main program. 
@@ -88,17 +92,19 @@ The global varables that we have in our code are the following
 | cornerCount | int | Stores the number of corners passed |
 | endTime | unsigned long int | Stores the time when our robot should stop moving |
 | dir | int | Stores the direction of the lap |
-| cornerScanDelay | int | Stores the time a corner was passed |
+| cornerScanDelay | unsigned long int | Stores the time a corner was passed |
 | cornerDetected | bool | Stores if a line has been detected |
 | steer | float | Stores the steering value |
 | prevObj | Block | Stores the previous block |
 | closeBlock | Block | Stores the closest block |
 | target | int | stores the target position for the blocks |
-| err | float | Stores the rror for following the object |
+| err | float | Stores the rror for following |
 | kP | float | Stores the kP value for following |
 | objDelay | int | Stores the time when an object is passed |
 | targetAngle | int | Stores the target angle for gyro following |
+| caughtOnWall | bool | Used to detect when to wall follow |
 
 ## Open Challenge Code
+In the open challenge, we implement gyro and IR following which uses readings from the sensors to ensure a stright path. Before we pass the first corner, the robot does not know which direction it is travelling in so it gyro follows. We implement gyro following in the following code where it finds the difference between the target angle and the current angle and multiplies that error to get the steering. `err = targetAngle - gyro.getAngle(); steer = err*2.0;` To set our direction we run this code contantly which checks if the direction is not set, it will reset it to whatever the RGB sensor is seeing. `if (dir==0) { dir = rgbSense.getColor(); }` The next part of our code checks if the RGB sensor sees the same color as the direction that the robot is travelling and it has been 2 seconds since the last line was seen and increments to cornerCount, sets the end time to after 3 seconds, flags the cornerDetected variable as true, changes targetAngle, and resets cornerScanDelay. We do this in the following code. `if (rgbSense.getColor()==dir && dir!=0 && millis()-cornerScanDelay>2000) { delay_2(60); cornerCount++; endTime = millis()+3000; cornerDetected = true; targetAngle += (dir == 1 ? 90 : -90) cornerScanDelay = millis(); }` We then have a code to check if the cornerDetected vairable is true, the robot is clase to the wall, and the robot is not wall following and if all the conditions are true, the robot will take a turn based on which direction the robot is travelling. We then check if the robot is close to the walls and if it is, we set the caughtOnWall variable to true so that the robot will start wall following. We then check if the robot is too close to the walls on the side and turn if so. We then check if we are supposed to wall follow and wall follow if so. The wall following is done with the following code. `if(caughtOnWall) { if(dir == 1) { err = 20.0 - irSensors.getFarDistance(2); steer = err * -2.0; } else if(dir == 2)  { err = 20.0 - irSensors.getFarDistance(0); steer = err*2.0; } if (steer>15){ steer = 15; }else if (steer<-15){ steer = -15; } }` We then make sure that the steering is not greater than 30 degrees and we set the steering and speed if it is not time to stop the run.
 
 ## Obstacle Challenge Code
