@@ -45,7 +45,7 @@ One of these was a larger robot with the usage of many more sensors and parts. H
 
 | Old Robot | New Robot |
 | --------- | --------- |
-| <img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/857241b9-94ba-453f-89ac-cdbb4481c77c" width="300" height="200" /> | !<img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/5507bb85-d2db-4309-833f-36882c81d8dc" width="300" height="200" /> |
+| <img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/857241b9-94ba-453f-89ac-cdbb4481c77c" width="300" height="200" /> | <img src="https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/b0eb5ddf-d9e2-45ea-8b82-c56cc65210e9" width="300" height="200" /> |
 
 ### Electrical Components
 Our chassis is controlled by the Arduino Nano microcontroller, which gets information from various sensors and uses said information to control the motors using an L298N motor controller board. The sensors that we are using for our vehicle are the following:
