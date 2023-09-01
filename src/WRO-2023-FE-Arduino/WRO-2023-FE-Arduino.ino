@@ -485,7 +485,7 @@ void obstacle()
       targetAngle -= 180 ;
       dir = 3-dir; // sets the direction to the opposite way
       unsigned long int prevTime = millis();
-      while (irSensors.getDistance(1)>50 || millis() - prevTime < 500){
+      while (irSensors.getDistance(1)>50 || millis() - prevTime < 1000){
         err = targetAngle + (dir == 2 ? 160 : 200) - gyro.getAngle();
         steer = err*2.0;
         if (steer>20){
@@ -586,7 +586,7 @@ void obstacle()
       else if (check2 > 1){
         // If the robot needs to turn on the inside, go forward a bit and then turn
         chassis.steer(0);
-        delay_2(400);
+        delay_2(600);
         chassis.steer((1.5-dir)*80);
         int prevTime = millis();
 
