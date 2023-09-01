@@ -16,7 +16,7 @@ In the open challenge, the only changes to the field are the size of the interio
 
 ## Obstacle Challenge Strategy
 
-For the obstacle challenge, we have two strategies to approaching the problem. The first one is to only consider the first obstacle and act according to that while the other is to plan a path for one side of the round and follow that. We are working with both strategies and testing both simultaneously to determine the better strategy. To detect the obstacles, we are using the Pixycam 2.1 which gives a list of objects to the Arduino Nano.
+For the obstacle challenge, we have two strategies for approaching the problem. The first one is to only consider the first obstacle and act according to that, while the other is to plan a path for one side of the round and follow that. We are working with both strategies and testing both simultaneously to determine the better strategy. To detect the obstacles, we are using the Pixycam 2.1, which gives a list of objects to the Arduino Nano.
 
 ### Strategy 1
 
@@ -28,7 +28,7 @@ The first strategy to approach the obstacle challenge is to keep the closest col
 
 ### Strategy 2
 
-Our second strategy for the obstacle challenge is to plan a path for each stretch of the mat and get the robot to follow that path. By having the current position, current heading, target position, and target heading, we can generate a polynomial to fit these paramenters. We do this with multiple target points to create a target path which we aim to follow and steer the robot so it aims to move in the direction of the next point. This path takes into account the position of the obstacles and maps points that avoid them. We then repeat this process until the 3 rounds are over. 
+Our second strategy for the obstacle challenge is to plan a path for each stretch of the mat and get the robot to follow that path. By having the current position, current heading, target position, and target heading, we can generate a polynomial to fit these parameters. We do this with multiple target points to create a target path which we aim to follow and steer the robot so it aims to move in the direction of the next point. This path takes into account the position of the obstacles and maps points that avoid them. We then repeat this process until the three rounds are over. 
 
 | Obstacle Challenge Complicated Approach |
 | ---------------------------------- |
