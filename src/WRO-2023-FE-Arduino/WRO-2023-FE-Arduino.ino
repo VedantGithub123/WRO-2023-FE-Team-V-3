@@ -484,8 +484,9 @@ void obstacle()
     { // If 2 laps are finished and the last object was red, run the turning sequence
       targetAngle -= 180 ;
       dir = 3-dir; // sets the direction to the opposite way
-      while (irSensors.getDistance(1)>50){
-        err = targetAngle + 170 - gyro.getAngle();
+      unsigned long int prevTime = millis();
+      while (irSensors.getDistance(1)>50 || millis() - prevTime < 500){
+        err = targetAngle + (dir == 2 ? 160 : 200) - gyro.getAngle();
         steer = err*2.0;
         if (steer>20){
           steer = 20;
@@ -497,20 +498,35 @@ void obstacle()
         gyro.updateGyro();
       } // Get close to the front wall
       // Turn for gyro
-      float tempAngle = gyro.getAngle();
       chassis.steer(-40);
       if(dir == 1){
-        while (abs(gyro.getAngle())<abs(targetAngle) + 20){ // Underturn on orange direction
+        while (abs(gyro.getAngle())<abs(targetAngle) + 20){ // Overturn on blue direction
           gyro.updateGyro();
+          if (irSensors.getDistance(3))
+          {
+            chassis.steer(0);
+            chassis.move(-255);
+            delay_2(2000);
+            chassis.move(255);
+            chassis.steer(-40);
+          }
         }
       }
       else{
-        while (abs(gyro.getAngle())>abs(targetAngle) - 20){ // Overturn on blue direction
+        while (abs(gyro.getAngle())>abs(targetAngle) + 20){ // Underturn on orange direction
           gyro.updateGyro();
+          if (irSensors.getDistance(3))
+          {
+            chassis.steer(0);
+            chassis.move(-255);
+            delay_2(2000);
+            chassis.move(255);
+            chassis.steer(-40);
+          }
         }
       }
+      gyro.angle = 0; 
       targetAngle = 0;
-      gyro.angle = gyro.getAngle() - tempAngle + 180.0;
       delay_2(1);
       cornerCount++;
     }else
@@ -583,7 +599,7 @@ void obstacle()
         chassis.steer((1.5-dir)*80);
         int prevTime = millis();
         // gyro.angle = 0;
-        while (abs(gyro.getAngle())<(abs(targetAngle) + 10) && (camera.getClosestBlock().m_signature != 3-dir || abs(gyro.getAngle())<(abs(targetAngle) - 40))){
+        while (abs(gyro.getAngle())<(abs(targetAngle) + 0) && (camera.getClosestBlock().m_signature != 3-dir || abs(gyro.getAngle())<(abs(targetAngle) - 40))){
           gyro.updateGyro();
         }
       }
