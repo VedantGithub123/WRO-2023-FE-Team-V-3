@@ -1,20 +1,20 @@
 WRO Future Engineers Team V^3 Engineering Documentation
 ====
 
-This repository contains engineering materials of a self-driven vehicle's model participating in the WRO Future Engineers competition in the 2023 season. More information on each subcomponent of the robot is placed in the README.md files in each folder.
+This repository contains engineering materials of a self-driven vehicle model participating in the WRO Future Engineers competition in the 2023 season. More information on each subcomponent of the robot is placed in the README.md files in each folder.
 
 ## Content
 * `build` contains documentation about our chassis and material choice
-* `electrical` contains schematic diagrams demonstrating the connections between different electromechanical components. It also includes the available datasheets for the aforementioned components and it also has a markdown file explaining the reasoning for each component.
+* `electrical` contains schematic diagrams demonstrating the connections between different electromechanical components. It also includes the available datasheets for the aforementioned components, and it also has a markdown file explaining the reasoning for each component.
 * `models` contains the files used by 3D printers to produce the vehicle elements.
 * `photos` contains two folders where one contains the team photos and the other contains the robot photos
-* `src` contains code of control software for all components which were programmed to participate in the competition
+* `src` contains the code of control software for all components that were programmed to participate in the competition
 * `strategy` contains documentation and diagrams explaining our approach to the problem
-* `video` contains the video.md file with the link to a video where driving demonstration exists
+* `video` contains the video.md file with the link to a video where the driving demonstration exists
 
 ## Rubric Requirements
 * `Mobility Management` is found in `build`, `electrical`, and `models`
-* `Power and Sense Managament` is found in `electrical`
+* `Power and Sense Management` is found in `electrical`
 * `Obstacle Management` is found in `strategy` and `src`
 * `Pictures - Team and Vehicle` is found in `photos`
 * `Performance Videos` is found in `video`
@@ -22,7 +22,7 @@ This repository contains engineering materials of a self-driven vehicle's model 
 
 
 ### Who We Are
-Team V^3 is an aspiring group of high school and university students who aim to be leaders in the future of autonomous vehicles. By taking the initiative to take part in the WRO Future Engineers challenge, we hope to gain experience in this field of engineering and problem-solving. We have been exposed to many robotic and logical challenges through Zebra Robotics, where we participated in many problems, such as WRO Robomissions, First LEGO League, and VEX Robotics Competition. Our goals for this season are the following:
+Team V^3 is an aspiring group of high school and university students who aim to be leaders in the future of autonomous vehicles. By taking the initiative to take part in the WRO Future Engineers challenge, we hope to gain experience in this field of engineering and problem-solving. We have been exposed to many robotic and logical challenges through Zebra Robotics, where we participated in many problems, such as WRO Robomissions, FIRST LEGO League, and VEX Robotics Competition. Our goals for this season are the following:
 - Gain knowledge in the field of autonomous vehicles
 - Expose ourselves to the nuances of software organization (i.e. Github)
 - Become proficient in the skills regarding electronic components
@@ -59,7 +59,7 @@ Our chassis is controlled by the Arduino Nano microcontroller, which gets inform
 We use the Pixycam 2.1 to identify the locations of the obstacles and effectively avoid them. The TCS34725 RGB sensor tells the microcontroller when it reaches a corner. Both IR sensors are used to detect the walls on the side and on the front. Finally, we use the L3G4200D gyro to know which direction we are facing. More information about our robot’s electrical components can be found in the README file in the electrical folder.
 
 ### Strategy and Code
-For the open challenge, our sensors are strategically placed in ways which allow us to detect walls at a 45° or less angle. This allows us to adjust accurately based on the distance from the wall, ultimately providing an optimal path to solve this challenge. In order to measure the number of laps we do, we use the RGB sensor to count the number of lines passed and then our robot stops after some time once 12 lines have been measured. This is implemented in the code by using the following lines:
+For the open challenge, our sensors are strategically placed in ways that allow us to detect walls at a 45° or less angle. This allows us to adjust accurately based on the distance from the wall, ultimately providing an optimal path to solve this challenge. In order to measure the number of laps we do, we use the RGB sensor to count the number of lines passed and then our robot stops after some time once 12 lines have been measured. This is implemented in the code by using the following lines:
 
 if (cornerCount==12)
 
