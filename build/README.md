@@ -1,7 +1,7 @@
 Build
 ====
 
-This directory consists of the different materials used to construct our robot, along with the reasoning for choosing our drivetrain.
+This directory consists of the different materials used to construct our robot, along with the reasoning for choosing our drivetrain. Attached is a pdf which includes the building instructions as well as a LDraw file of our robot. Our team created this model and instruction to allow easy replication of our robot if needed.
 
 ## Chassis Type & Explanation
 
