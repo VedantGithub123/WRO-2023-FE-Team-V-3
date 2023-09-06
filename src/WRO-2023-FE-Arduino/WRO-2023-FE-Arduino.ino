@@ -135,7 +135,7 @@ public:
     float max = 0;
     int val = 0;
     int x = 0;
-    for (int i = 0; i<10; i++){
+    for (int i = 0; i<15; i++){
       x = analogRead(irPorts[port]);
       val = (138.672)/pow(1.0 + 5.56591*(x/200.0), 1.24888) + (-0.0340614 * pow(x/200.0, 3));
       if (val>max){
@@ -217,7 +217,7 @@ public:
 
   void updateGyro()
   {
-    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8.2;
+    angle += (micros() - prevTime) / 1000000.0 * (getGyroChange() - drift) / -14.286 * 9/8.2 * 72/74;
     prevTime = micros();
     Serial.println(getAngle());
   }
@@ -291,6 +291,7 @@ float err = 0; // Stores the error for following the object
 const float kP = -0.35; // Stores the kP for following the object
 int targetAngle = 0; // Angle to turn gyro
 bool caughtOnWall = false; // Stores if the robot is wall following
+int curColor = 0;
 
 void setup()
 {
@@ -428,6 +429,9 @@ void obstacle()
   speed = 255; // Sets speed to 255
 
   steer = -1; // Steering is set to straight
+
+  curColor = rgbSense.getColor();
+
   if(millis() - cornerScanDelay < 2000) // right after turning look for block and ignore lines
   {
     closeBlock = camera.getClosestBlock(); // Gets closest block or line from the camera
@@ -451,7 +455,7 @@ void obstacle()
 
   if (dir==0)
   { // Rewrites direction to the color of the sensor if the direction is not defined
-    dir = rgbSense.getColor();
+    dir = curColor;
   }
 
   if (closeBlock.m_signature<=2)
@@ -483,7 +487,7 @@ void obstacle()
     }
   }
 
-  if (rgbSense.getColor()==dir && dir>0 && millis()-cornerScanDelay>1000)
+  if (curColor==dir && dir>0 && millis()-cornerScanDelay>1000)
   { // Checks if the color is the same is the direction to travel and if it has been 1 second past the start or the reversing of the 3rd lap    
     cornerCount++; // Increments 1 to cornerCount
     if (cornerCount>=12)
@@ -516,7 +520,7 @@ void obstacle()
       // Turn for gyro
       chassis.steer(-40);
       if(dir == 1){
-        while (abs(gyro.getAngle())<abs(targetAngle) + 20){ // Overturn on blue direction
+        while (abs(gyro.getAngle())<abs(targetAngle) -10){ // Overturn on blue direction
           gyro.updateGyro();
           if (irSensors.getDistance(3))
           {
@@ -543,9 +547,6 @@ void obstacle()
         }
         targetAngle = 10;
       }
-      chassis.move(0);
-      delay_2(1000);
-      chassis.move(255);
       gyro.angle = 0; 
       delay_2(1);
       cornerCount++;
@@ -606,13 +607,15 @@ void obstacle()
       else if (check2 > 1){
         // If the robot needs to turn on the inside, go forward a bit and then turn
         chassis.steer(0);
-        delay_2(300);
+        delay_2(200);
         chassis.steer((1.5-dir)*80);
         int prevTime = millis();
 
         while (abs(gyro.getAngle())<(abs(targetAngle) - 30)){
           gyro.updateGyro();
         }
+        chassis.steer(0);
+        delay(300);
       }
       else
       { // If the robot sees nothing, turn
@@ -636,9 +639,9 @@ void obstacle()
     {
       steer = 30;
     }
-    else if (irSensors.getFarDistance(0) <= 12) 
+    else if (irSensors.getFarDistance(0) <= 6) 
     {
-      steer = 30;
+      steer = 20;
     }
   }else if (irSensors.getFarDistance(2) <= 15)
   {
@@ -646,9 +649,9 @@ void obstacle()
     {
       steer = -30;
     }
-    else if (irSensors.getFarDistance(2) <= 12) 
+    else if (irSensors.getFarDistance(2) <= 6) 
     {
-      steer = -30;
+      steer = -20;
   }
   }
 
@@ -659,6 +662,7 @@ void obstacle()
     delay_2(3000);
     chassis.move(255);
     endTime+=2000;
+    cornerScanDelay = millis();
   }
 
   gyro.updateGyro();
