@@ -84,7 +84,7 @@ public:
 class IRSensors {
 public:
   IRSensors(int ports[]) {
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 6; i++) {
       irPorts[i] = ports[i];
     }
   }
@@ -240,7 +240,7 @@ public:
 // Constructs an instance of the classes
 Chassis chassis(5, 6, 7, 9);               // For movement
 rgbSensor rgbSense;                        // For sensing lines on the mat
-const int irPorts[4] = { A0, A1, A2, 3 };  // Ports for the IR sensors
+const int irPorts[6] = { A0, A1, A2, 3, A6, A7 };  // Ports for the IR sensors
 IRSensors irSensors(irPorts);              // For detecting distance in the front and sides
 Gyro gyro;                                 // For detecting the angle of our robot
 Camera camera;                             // For getting the obstacles
@@ -290,8 +290,9 @@ void setup() {
   int max = 0;
   while (!digitalRead(buttonPort)) {
     // delay_2(10);
-    Serial.println(irSensors.getRawValue(2));
-    delay(100);
+    // Serial.println(irSensors.getFarDistance(5));
+    Serial.println(analogRead(A7));
+    // delay(100);
   }
 }
 
@@ -424,8 +425,9 @@ void obstacle() {
     }
   } else {
     // If there is nothing to see follow on outside wall
-    err = 50 - (dir == 0 ? 50 : irSensors.getFarDistance(dir == 1 ? 0 : 2));
-    steer = err * (dir == 1 ? 1.0 : -1.0) * 0.3;  // 0.3 is the kP
+    // err = 50 - (dir == 0 ? 50 : irSensors.getFarDistance(dir == 1 ? 0 : 2));
+    err = 380-analogRead(A7);
+    steer = err * (dir == 1 ? 1.0 : -1.0) * -0.5;  // 0.3 is the kP
     if (steer > 15) {
       steer = 15;
     } else if (steer < -15) {
