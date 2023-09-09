@@ -115,6 +115,12 @@ public:
     return 0.000571671*val*val + -0.496573*val + 130.376;
   }
 
+  float getFarDistanceValue(int port){
+    float val = analogRead(irPorts[port]);
+    // return -0.131336* + 82.3502;
+    return 0.000571671*val*val + -0.496573*val + 130.376;
+  }
+
   float getFarDistance(int port) {
     int sum = 0;
     for(int i = 0; i < 5; i++)
@@ -150,6 +156,7 @@ public:
     }
   }
   int irPorts[6];
+  int irPorts[6];
 };
 
 // Creates the Gyro class which is used to measure our heading
@@ -161,6 +168,7 @@ public:
     writeRegister(L3G4200D_Address, CTRL_REG2, 0b00000000);
     writeRegister(L3G4200D_Address, CTRL_REG3, 0b00000000);
     // writeRegister(L3G4200D_Address, CTRL_REG4, 0b00110000);
+    writeRegister(L3G4200D_Address, CTRL_REG4, 0b00010000);
     writeRegister(L3G4200D_Address, CTRL_REG4, 0b00010000);
     writeRegister(L3G4200D_Address, CTRL_REG5, 0b00000000);
     delay(1);
@@ -475,6 +483,7 @@ void obstacle() {
   }
 
   if (curColor == dir && dir > 0 && millis() - cornerScanDelay > 2000) {  // Checks if the color is the same is the direction to travel and if it has been 1 second past the start or the reversing of the 3rd lap
+  if (curColor == dir && dir > 0 && millis() - cornerScanDelay > 2000) {  // Checks if the color is the same is the direction to travel and if it has been 1 second past the start or the reversing of the 3rd lap
     cornerCount++;                                                        // Increments 1 to cornerCount
     if (cornerCount >= 12) {                                              // If all the corners are passed, set the program to stop after 3.8 seconds
       endTime = millis() + 3500;
@@ -483,7 +492,11 @@ void obstacle() {
       targetAngle -= 180;
       dir = 3 - dir;  // sets the direction to the opposite way
       unsigned long int prevTime = millis();
+      chassis.move(0);
+      delay_2(3000);
+      chassis.move(255);
       while (irSensors.getDistance(1) > 50 || millis() - prevTime < 1000) {
+        err = targetAngle + (dir == 2 ? 180 : 180) - gyro.getAngle();
         err = targetAngle + (dir == 2 ? 180 : 180) - gyro.getAngle();
         steer = err * 2.0;
         if (steer > 20) {
@@ -502,7 +515,7 @@ void obstacle() {
       // Turn for gyro
       chassis.steer(-40);
       if (dir == 1) {
-        while (abs(gyro.getAngle()) < abs(targetAngle) - 10) {  // Underturn on blue direction
+        while (abs(gyro.getAngle()) < abs(targetAngle) + 0) {  // Underturn on blue direction
           gyro.updateGyro();
           if (irSensors.getDistance(3)) {
             chassis.steer(0);
