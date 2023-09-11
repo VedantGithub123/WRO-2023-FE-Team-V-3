@@ -8,11 +8,11 @@ This directory consists of an explanation and diagrams of our strategy for both 
 In the open challenge, the only changes to the field are the size of the interior walls. In order to combat these changes, we will be using IR distance sensors to identify the distance from the walls. By having multiple distance sensors, the robot can accurately calculate the distance to the surrounding walls. The robot can use these sensor readings to correct itself and make sure it goes parallel to the wall. The robot will know when to turn due to the usage of a RGB sensor which detects the colored lines in the corner. This will also allow us to keep track of the number of laps we complete so we know when to end. Below are diagrams and flow charts demonstrating the process.
 | Straight Movement | Turning |
 | ----------------- | ------- |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/53158008-50e9-43d2-a8da-e41560a97f00) | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/22a1995e-1c62-4540-9e58-ad45c3a5c97a) |
+| ![image](https://drive.google.com/file/d/1sl-HCauvqxThJZm0eeGbrZbrhHrH50nJ/view?usp=drive_link) | ![image](https://drive.google.com/file/d/1nIDDyOZn28JYcaWRNiBgwWf6LNt0vX17/view?usp=drive_link) |
 
 | Open Challenge Flowchart |
 | ------------------------ |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/2448b1ec-511b-4f77-8bc3-528df8e6e0b6) |
+| ![image](https://drive.google.com/file/d/1_4qiJSqqLnAqw7ilf54cnIb5HE8X9X17/view?usp=drive_link) |
 
 ## Obstacle Challenge Strategy
 
@@ -24,7 +24,7 @@ The first strategy to approach the obstacle challenge is to keep the closest col
 
 | Obstacle Challenge Simple Approach |
 | ---------------------------------- |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/a151bb18-8517-4f28-9d21-015ce52a3ff2) |
+| ![image](https://drive.google.com/file/d/18gsX1JlRYennzsx7GrNMAYbRCy7gM8yc/view?usp=drive_link) |
 
 ### Strategy 2
 
@@ -32,4 +32,4 @@ Our second strategy for the obstacle challenge is to plan a path for each stretc
 
 | Obstacle Challenge Complicated Approach |
 | ---------------------------------- |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/36173d42-eb99-45da-80e0-ce6af80726a3) |
+| ![image](https://drive.google.com/file/d/1dFHU8QVgc9cSyHeG_vhY4EH8VAXhCVJk/view?usp=drive_link) |

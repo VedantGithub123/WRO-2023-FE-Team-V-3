@@ -9,7 +9,7 @@ Our robot is a four-wheeled vehicle which has a rear-wheel drive with steering i
 
 | Rear-Wheel Drive | Front Wheel Drive |
 | ---------------- | ----------------- |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/a657e21e-20b9-46eb-b555-2f60db8776fa) | ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/1d374418-1677-495a-9adb-77a0abb5c40a) |
+| ![image](https://drive.google.com/file/d/1Jf-CvguoRfaVFCoVMNndH-xFYlsa_ZU-/view?usp=sharing) | ![image](https://drive.google.com/file/d/1VLR8ZvrXIQMaj_SNlWJ1fxSpYCzsmNQD/view?usp=sharing) |
 
 ## Steering
 
@@ -17,7 +17,7 @@ Our steering mechanism is a four-bar with free-spinning wheels mounted on it. Th
 
 | Four-Bar Steering Mechanism |
 | --------------------------- |
-| ![image](https://github.com/VedantGithub123/WRO-2023-FE/assets/112735969/43159301-d6ed-4b82-bd15-9d167c74ce55) |
+| ![image](https://drive.google.com/file/d/16rHeZFgRDMQf3lHZIuXqODQA6GuB-DN7/view?usp=sharing) |
 
 ## Materials
 
