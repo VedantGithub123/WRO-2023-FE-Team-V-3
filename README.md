@@ -45,7 +45,7 @@ One of these was a larger robot with the usage of many more sensors and parts. H
 
 | Old Robot | New Robot |
 | --------- | --------- |
-| <img src="https://drive.google.com/file/d/1RlZYskqQS1ByvdWUU-VYG0KftsT1Hhgg/view?usp=sharing" width="300" height="200" /> | <img src="https://drive.google.com/file/d/1vywV_2QEjR2MpFHMMntFpNzQ3LMgPVq5/view?usp=sharing" width="300" height="200" /> |
+| <img src="https://drive.google.com/uc?id=1RlZYskqQS1ByvdWUU-VYG0KftsT1Hhgg" width="300" height="200" /> | <img src="https://drive.google.com/uc?id=1vywV_2QEjR2MpFHMMntFpNzQ3LMgPVq5" width="300" height="200" /> |
 
 ### Electrical Components
 Our chassis is controlled by the Arduino Nano microcontroller, which gets information from various sensors and uses said information to control the motors using an L298N motor controller board. The sensors that we are using for our vehicle are the following:

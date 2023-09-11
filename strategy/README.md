@@ -8,11 +8,11 @@ This directory consists of an explanation and diagrams of our strategy for both 
 In the open challenge, the only changes to the field are the size of the interior walls. In order to combat these changes, we will be using IR distance sensors to identify the distance from the walls. By having multiple distance sensors, the robot can accurately calculate the distance to the surrounding walls. The robot can use these sensor readings to correct itself and make sure it goes parallel to the wall. The robot will know when to turn due to the usage of a RGB sensor which detects the colored lines in the corner. This will also allow us to keep track of the number of laps we complete so we know when to end. Below are diagrams and flow charts demonstrating the process.
 | Straight Movement | Turning |
 | ----------------- | ------- |
-| ![image](https://drive.google.com/file/d/1sl-HCauvqxThJZm0eeGbrZbrhHrH50nJ/view?usp=drive_link) | ![image](https://drive.google.com/file/d/1nIDDyOZn28JYcaWRNiBgwWf6LNt0vX17/view?usp=drive_link) |
+| ![image](https://drive.google.com/uc?id=1sl-HCauvqxThJZm0eeGbrZbrhHrH50nJ) | ![image](https://drive.google.com/uc?id=1nIDDyOZn28JYcaWRNiBgwWf6LNt0vX17) |
 
 | Open Challenge Flowchart |
 | ------------------------ |
-| ![image](https://drive.google.com/file/d/1_4qiJSqqLnAqw7ilf54cnIb5HE8X9X17/view?usp=drive_link) |
+| ![image](https://drive.google.com/uc?id=1_4qiJSqqLnAqw7ilf54cnIb5HE8X9X17) |
 
 ## Obstacle Challenge Strategy
 
@@ -24,7 +24,7 @@ The first strategy to approach the obstacle challenge is to keep the closest col
 
 | Obstacle Challenge Simple Approach |
 | ---------------------------------- |
-| ![image](https://drive.google.com/file/d/18gsX1JlRYennzsx7GrNMAYbRCy7gM8yc/view?usp=drive_link) |
+| ![image](https://drive.google.com/uc?id=18gsX1JlRYennzsx7GrNMAYbRCy7gM8yc) |
 
 ### Strategy 2
 
@@ -32,4 +32,4 @@ Our second strategy for the obstacle challenge is to plan a path for each stretc
 
 | Obstacle Challenge Complicated Approach |
 | ---------------------------------- |
-| ![image](https://drive.google.com/file/d/1dFHU8QVgc9cSyHeG_vhY4EH8VAXhCVJk/view?usp=drive_link) |
+| ![image](https://drive.google.com/uc?id=1dFHU8QVgc9cSyHeG_vhY4EH8VAXhCVJk) |
