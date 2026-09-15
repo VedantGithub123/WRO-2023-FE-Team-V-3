@@ -72,21 +72,16 @@ if (cornerCount==12)
 The cornerCount variable keeps track of how many corners the robot has passed during its run. The number is twelve as the square-shaped mat has 4 corners, and the robot must complete three laps.
 We have two strategies for the obstacle challenge. The first of which only focuses on one block and a time and avoids it. The other strategy involves planning a route for each stretch of the lap and getting the robot to follow that path. Some code for the first challenge is the following:
 
+```
 if (closeBlock.m_signature==1)
-
 {
-
 target = (207-closeBlock.m_y)/1.3-15;
-
 }else
-
 {
-
 target = 315.0-(207-closeBlock.m_y)/1.3+15;
-
 }
-
 err = -150.0*(closeBlock.m_x-target);
+```
 
 This code gets the closest block and sets the target position of that block onto either side of the robot based on the color of the block.
 
