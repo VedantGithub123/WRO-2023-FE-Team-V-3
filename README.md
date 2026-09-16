@@ -62,11 +62,8 @@ We use the Pixycam 2.1 to identify the locations of the obstacles and effectivel
 For the open challenge, our sensors are strategically placed in ways that allow us to detect walls at a 45° or less angle. This allows us to adjust accurately based on the distance from the wall, ultimately providing an optimal path to solve this challenge. In order to measure the number of laps we do, we use the RGB sensor to count the number of lines passed and then our robot stops after some time once 12 lines have been measured. This is implemented in the code by using the following lines:
 ```
 if (cornerCount==12)
-
 {
-
   endTime = millis()+5000;
-  
 }
 ```
 
@@ -76,10 +73,11 @@ We have two strategies for the obstacle challenge. The first of which only focus
 ```
 if (closeBlock.m_signature==1)
 {
-target = (207-closeBlock.m_y)/1.3-15;
-}else
+  target = (207-closeBlock.m_y)/1.3-15;
+}
+else
 {
-target = 315.0-(207-closeBlock.m_y)/1.3+15;
+  target = 315.0-(207-closeBlock.m_y)/1.3+15;
 }
 err = -150.0*(closeBlock.m_x-target);
 ```
