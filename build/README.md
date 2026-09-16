@@ -9,7 +9,7 @@ Our robot is a four-wheeled vehicle which has a rear-wheel drive with steering i
 
 | Rear-Wheel Drive | Front Wheel Drive |
 | ---------------- | ----------------- |
-| ![image](https://drive.google.com/uc?id=1Jf-CvguoRfaVFCoVMNndH-xFYlsa_ZU-) | ![image](https://drive.google.com/uc?id=1VLR8ZvrXIQMaj_SNlWJ1fxSpYCzsmNQD) |
+| <img width="651" height="390" alt="image" src="https://github.com/user-attachments/assets/805fd31c-5dbb-4fbb-a85b-4ce8b4fff7e3" /> | <img width="665" height="374" alt="image" src="https://github.com/user-attachments/assets/cacb2be4-ead2-4343-aefa-85aed2e3742c" /> |
 
 ## Steering
 
@@ -17,7 +17,7 @@ Our steering mechanism is a four-bar with free-spinning wheels mounted on it. Th
 
 | Four-Bar Steering Mechanism |
 | --------------------------- |
-| ![image](https://drive.google.com/uc?id=16rHeZFgRDMQf3lHZIuXqODQA6GuB-DN7) |
+| ![image](<img width="276" height="387" alt="image" src="https://github.com/user-attachments/assets/093cb2fb-11fa-4778-98bc-7b8017fcd158" />) |
 
 ## Materials
 
