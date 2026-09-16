@@ -17,7 +17,7 @@ Our steering mechanism is a four-bar with free-spinning wheels mounted on it. Th
 
 | Four-Bar Steering Mechanism |
 | --------------------------- |
-| ![image](<img width="276" height="387" alt="image" src="https://github.com/user-attachments/assets/093cb2fb-11fa-4778-98bc-7b8017fcd158" />) |
+| <img width="276" height="387" alt="image" src="https://github.com/user-attachments/assets/093cb2fb-11fa-4778-98bc-7b8017fcd158" /> |
 
 ## Materials
 
