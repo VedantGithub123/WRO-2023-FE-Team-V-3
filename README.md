@@ -45,7 +45,9 @@ One of these was a larger robot with the usage of many more sensors and parts. H
 
 | Old Robot | New Robot |
 | --------- | --------- |
-| <img src="https://drive.google.com/uc?id=1RlZYskqQS1ByvdWUU-VYG0KftsT1Hhgg" width="300" height="200" /> | <img src="https://drive.google.com/uc?id=1vywV_2QEjR2MpFHMMntFpNzQ3LMgPVq5" width="300" height="200" /> |
+| <img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/2b8b48fb-1724-4e0b-983d-d1f91d05bd80" />
+ | <img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/58f420e7-f01e-4abc-bdd1-67ef5cc6e622" />
+ |
 
 ### Electrical Components
 Our chassis is controlled by the Arduino Nano microcontroller, which gets information from various sensors and uses said information to control the motors using an L298N motor controller board. The sensors that we are using for our vehicle are the following:
@@ -60,7 +62,7 @@ We use the Pixycam 2.1 to identify the locations of the obstacles and effectivel
 
 ### Strategy and Code
 For the open challenge, our sensors are strategically placed in ways that allow us to detect walls at a 45° or less angle. This allows us to adjust accurately based on the distance from the wall, ultimately providing an optimal path to solve this challenge. In order to measure the number of laps we do, we use the RGB sensor to count the number of lines passed and then our robot stops after some time once 12 lines have been measured. This is implemented in the code by using the following lines:
-
+```
 if (cornerCount==12)
 
 {
@@ -68,9 +70,10 @@ if (cornerCount==12)
   endTime = millis()+5000;
   
 }
+```
 
 The cornerCount variable keeps track of how many corners the robot has passed during its run. The number is twelve as the square-shaped mat has 4 corners, and the robot must complete three laps.
-We have two strategies for the obstacle challenge. The first of which only focuses on one block and a time and avoids it. The other strategy involves planning a route for each stretch of the lap and getting the robot to follow that path. Some code for the first challenge is the following:
+We have two strategies for the obstacle challenge. The first of which only focuses on one block at a time and avoids it. The other strategy involves planning a route for each stretch of the lap and getting the robot to follow that path. Some code for the first challenge is the following:
 
 ```
 if (closeBlock.m_signature==1)
@@ -85,5 +88,5 @@ err = -150.0*(closeBlock.m_x-target);
 
 This code gets the closest block and sets the target position of that block onto either side of the robot based on the color of the block.
 
-All in all, this robot is a statement to our team’s adaptability and problem solving skills as we were able to completely redesign and program a new and more compact robot after learning from our previous mistakes. We hope that this robot and our hard work will lead us to success and we look forward to competing!
+All in all, this robot is a testament to our team’s adaptability and problem-solving skills, as we were able to completely redesign and program a new and more compact robot after learning from our previous mistakes. We hope that this robot and our hard work will lead us to success, and we look forward to competing!
 
